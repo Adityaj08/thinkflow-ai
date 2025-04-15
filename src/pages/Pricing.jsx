@@ -102,7 +102,7 @@ export default function Pricing() {
                   </ul>
                   <Link
                     to="/app"
-                    className="block mt-25 w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-center transition-colors duration-200"
+                    className="block mt-20 w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-center transition-colors duration-200"
                   >
                     Get Started
                   </Link>

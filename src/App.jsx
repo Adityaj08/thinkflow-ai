@@ -769,9 +769,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen transition-all duration-200 ${
-      isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'
-    }`}>
+    <div className={`min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
       <ScrollToTop />
       <div className="max-w-5xl mx-auto p-2 sm:p-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
