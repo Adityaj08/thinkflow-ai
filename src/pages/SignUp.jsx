@@ -25,7 +25,25 @@ const SignUp = () => {
 
   return (
     <div className="flex min-h-screen h-screen overflow-hidden">
-      {/* Left Side - Sign Up Form */}
+      {/* Left Side - Background */}
+      <div className="hidden lg:block lg:w-1/2 bg-[#121212] relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10" />
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="text-center">
+            <div className="w-48 h-48 mx-auto mb-8">
+              <img 
+                src="/ThinkFlowIcon.png" 
+                alt="Flow Diagram" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <h2 className="text-4xl font-bold text-white mb-4">Welcome to ThinkFlow</h2>
+            <p className="text-xl text-white/60">Create beautiful diagrams with AI</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Sign Up Form */}
       <div className="w-full lg:w-1/2 bg-[#121212] flex items-center justify-center p-6">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center">
@@ -74,37 +92,6 @@ const SignUp = () => {
               Sign in
             </Link>
           </p>
-        </div>
-      </div>
-
-      {/* Right Side - Design Grid (Hidden on mobile) */}
-      <div className="hidden lg:block w-1/2 bg-[#1a1a1a]">
-        <div className="grid grid-cols-2 grid-rows-3 gap-2 h-full p-2">
-          {/* Top row */}
-          <div className="rounded-lg bg-emerald-500 p-4 flex flex-col justify-center">
-            <h3 className="text-lg font-bold text-white mb-1">Premium Features</h3>
-            <p className="text-white/90 text-xs">Access advanced AI capabilities and tools</p>
-          </div>
-          <div className="rounded-lg overflow-hidden bg-[#222222]">
-            <img src="https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" className="w-full h-full object-cover opacity-90" />
-          </div>
-          
-          {/* Middle row */}
-          <div className="rounded-lg overflow-hidden bg-[#222222]">
-            <img src="https://images.pexels.com/photos/2156881/pexels-photo-2156881.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" className="w-full h-full object-cover opacity-90" />
-          </div>
-          <div className="rounded-lg bg-yellow-400 p-4 flex flex-col justify-center">
-            <h3 className="text-lg font-bold text-gray-800 mb-1">Collaboration</h3>
-            <p className="text-gray-700 text-xs">Work together with your team in real-time</p>
-          </div>
-          
-          {/* Bottom row */}
-          <div className="rounded-lg overflow-hidden bg-[#222222]">
-            <img src="https://images.pexels.com/photos/2569997/pexels-photo-2569997.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" className="w-full h-full object-cover opacity-90" />
-          </div>
-          <div className="rounded-lg overflow-hidden bg-[#222222]">
-            <img src="https://images.pexels.com/photos/10874582/pexels-photo-10874582.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" className="w-full h-full object-cover opacity-90" />
-          </div>
         </div>
       </div>
     </div>

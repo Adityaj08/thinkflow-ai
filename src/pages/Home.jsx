@@ -40,7 +40,7 @@ export default function Home() {
               <FadeContent delay={1000} duration={1200} blur={true}>
                 <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 md:gap-6 px-4">
                   <Link
-                    to="/signup"
+                    to="/signin"
                     className="w-full sm:w-auto px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-all duration-200 text-base sm:text-lg md:text-xl"
                   >
                     Get Started

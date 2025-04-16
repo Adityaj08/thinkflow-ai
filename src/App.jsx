@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useAuth0 } from '@auth0/auth0-react';
 import mermaid from "mermaid";
 import { Skeleton } from "./components/Skeleton";
 import { themes } from "./constants/themes";
@@ -23,6 +24,7 @@ fontStyle.textContent = `
 document.head.appendChild(fontStyle);
 
 export default function App() {
+  const { user } = useAuth0();
   const [code, setCode] = useState(localStorage.getItem("diagram") || `graph TD\nA[Start] --> B{Decision}`);
   const [prompt, setPrompt] = useState("");
   const [explanation, setExplanation] = useState("");
@@ -45,6 +47,9 @@ export default function App() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const [copyToast, setCopyToast] = useState(null);
+
+  // Check if user is admin
+  const isAdmin = user && user['https://thinkflow.ai/roles']?.includes('admin');
 
   // Preload logo image for exports
   useEffect(() => {
@@ -479,9 +484,12 @@ export default function App() {
       rect.setAttribute('fill', 'white');
       newSvg.insertBefore(rect, newSvg.firstChild);
 
-      // Add watermark
-      const watermark = new Watermark(width, height);
-      watermark.addWatermarkToSvg(newSvg);
+      // Add watermark only if not admin
+      if (!isAdmin) {
+        const watermark = new Watermark(width, height);
+        await watermark.preloadLogo();
+        watermark.addWatermarkToSvg(newSvg);
+      }
 
       if (format === 'svg') {
         // For SVG, directly create blob
@@ -490,31 +498,35 @@ export default function App() {
         if (returnBlob) return blob;
         const url = URL.createObjectURL(blob);
         downloadURL(url, 'diagram.svg');
-      } else {
-        // For PNG/JPG, render to canvas
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const pixelRatio = window.devicePixelRatio || 1;
-        
-        canvas.width = width * pixelRatio;
-        canvas.height = height * pixelRatio;
-        
-        // Scale canvas for high DPI displays
-        ctx.scale(pixelRatio, pixelRatio);
-        
-        // Draw white background
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, width, height);
-        
-        // Convert SVG to image
-        const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(newSvg))));
-        
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => {
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            // Add watermark to canvas
+        return;
+      }
+      
+      // For PNG/JPG, render to canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const pixelRatio = window.devicePixelRatio || 1;
+      
+      canvas.width = width * pixelRatio;
+      canvas.height = height * pixelRatio;
+      
+      // Scale canvas for high DPI displays
+      ctx.scale(pixelRatio, pixelRatio);
+      
+      // Draw white background
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, width, height);
+      
+      // Convert SVG to image
+      const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(newSvg))));
+      
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Add watermark to canvas only if not admin
+          if (!isAdmin) {
+            const watermark = new Watermark(width, height);
             watermark.addWatermarkToCanvas(ctx, () => {
               // Convert to blob
               canvas.toBlob((blob) => {
@@ -527,11 +539,22 @@ export default function App() {
                 }
               }, `image/${format}`, 1.0);
             });
-          };
-          img.onerror = reject;
-          img.src = svgUrl;
-        });
-      }
+          } else {
+            // For admin, skip watermark
+            canvas.toBlob((blob) => {
+              if (returnBlob) {
+                resolve(blob);
+              } else {
+                const url = URL.createObjectURL(blob);
+                downloadURL(url, `diagram.${format}`);
+                resolve();
+              }
+            }, `image/${format}`, 1.0);
+          }
+        };
+        img.onerror = reject;
+        img.src = svgUrl;
+      });
     } catch (error) {
       console.error('Error during diagram export:', error);
       throw error;

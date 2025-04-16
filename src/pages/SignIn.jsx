@@ -81,7 +81,7 @@ const SignIn = () => {
       <div className="hidden lg:block w-1/2 bg-[#1a1a1a]">
         <div className="grid grid-cols-2 grid-rows-3 gap-2 h-full p-2">
           {/* Top row */}
-          <div className="rounded-lg bg-emerald-500 p-4 flex flex-col justify-center">
+          <div className="rounded-lg bg-black p-4 flex flex-col justify-center">
             <h3 className="text-lg font-bold text-white mb-1">Innovative Design</h3>
             <p className="text-white/90 text-xs">Harness the power of AI for cutting-edge diagram creations</p>
           </div>
@@ -93,9 +93,9 @@ const SignIn = () => {
           <div className="rounded-lg overflow-hidden bg-[#222222]">
             <img src="https://images.pexels.com/photos/2156881/pexels-photo-2156881.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" className="w-full h-full object-cover opacity-90" />
           </div>
-          <div className="rounded-lg bg-yellow-400 p-4 flex flex-col justify-center">
-            <h3 className="text-lg font-bold text-gray-800 mb-1">User-Friendly Interface</h3>
-            <p className="text-gray-700 text-xs">Easily create and customize with our intuitive platform</p>
+          <div className="rounded-lg bg-gray-800 p-4 flex flex-col justify-center">
+            <h3 className="text-lg font-bold text-white mb-1">User-Friendly Interface</h3>
+            <p className="text-white text-xs">Easily create and customize with our intuitive platform</p>
           </div>
           
           {/* Bottom row */}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import Watermark from './Watermark';
 
@@ -6,6 +7,8 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
   const [isSharing, setIsSharing] = useState(false);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState('');
+  const { user } = useAuth0();
+  const isAdmin = user && user['https://thinkflow.ai/roles']?.includes('admin');
 
   const handleShare = async (format) => {
     try {
@@ -178,6 +181,12 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
       ${isDarkMode ? 'bg-black/30 border border-white/10' : 'bg-white/80 border border-gray-200'}
       transition-all duration-200 z-20`}>
       <div className="p-2 space-y-2">
+        {isAdmin && (
+          <div className="px-3 py-2 flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Admin</span>
+            <span className="text-xs text-gray-400">Watermark-free downloads</span>
+          </div>
+        )}
         <div className="px-3 py-2 text-sm font-medium text-gray-400">Export</div>
         {['png', 'jpg', 'svg', 'pdf'].map(format => (
           <button

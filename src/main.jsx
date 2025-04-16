@@ -47,6 +47,8 @@ root.render(
         redirect_uri: window.location.origin + '/app',
         audience: 'https://thinkflow.ai/api'
       }}
+      cacheLocation="localstorage"
+      useRefreshTokens={true}
       onRedirectCallback={(appState) => {
         window.history.replaceState(
           {},
