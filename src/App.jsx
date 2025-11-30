@@ -7,6 +7,7 @@ import { ExplanationSection } from "./components/ExplanationSection";
 import { HelpMenu } from "./components/HelpMenu";
 import ScrollToTop from "./components/ScrollToTop";
 import { Toast } from "./components/Toast";
+import { EditInputBox } from "./components/EditInputBox";
 import { themes } from "./constants/themes";
 
 // Add Montserrat font import
@@ -57,7 +58,12 @@ export default function App() {
     canDecreaseScale,
     selectApiKey,
     showToast,
-    handleToastClose
+    handleToastClose,
+    isEditInputOpen,
+    setIsEditInputOpen,
+    editInputValue,
+    setEditInputValue,
+    updateDiagram
   } = useDiagramLogic();
 
   return (
@@ -147,6 +153,16 @@ export default function App() {
           duration={copyToast.duration}
         />
       )}
+
+      <EditInputBox
+        isOpen={isEditInputOpen}
+        onClose={() => setIsEditInputOpen(false)}
+        onSubmit={updateDiagram}
+        value={editInputValue}
+        setValue={setEditInputValue}
+        isLoading={isLoading}
+        isDarkMode={isDarkMode}
+      />
     </div>
   );
 }
