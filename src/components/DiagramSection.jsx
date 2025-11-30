@@ -62,8 +62,8 @@ export const DiagramSection = ({
             <div
                 ref={diagramRef}
                 className={`rounded-lg transition-all duration-200 flex items-center justify-center ${isFullscreen
-                        ? 'fixed inset-0 w-screen h-screen p-4 sm:p-8 overflow-auto'
-                        : 'w-full overflow-hidden'
+                    ? 'fixed inset-0 w-screen h-screen p-4 sm:p-8 overflow-auto'
+                    : 'w-full overflow-hidden'
                     } ${isDarkMode
                         ? 'bg-white/10 backdrop-blur-lg border border-white/10'
                         : 'bg-white/80 backdrop-blur-lg border border-gray-200'
