@@ -1,10 +1,10 @@
 import { FullscreenIcon, ExitFullscreenIcon } from './icons';
 
-export const DiagramControls = ({ 
-  isDarkMode, 
-  isFullscreen, 
-  toggleFullscreen, 
-  orientation, 
+export const DiagramControls = ({
+  isDarkMode,
+  isFullscreen,
+  toggleFullscreen,
+  orientation,
   handleOrientationChange,
   scale,
   handleScaleChange,
@@ -34,9 +34,8 @@ export const DiagramControls = ({
 
       <button
         onClick={() => handleOrientationChange('TD')}
-        className={`p-1 rounded transition-all duration-200 ${
-          orientation === 'TD' ? 'bg-white/20' : 'hover:bg-white/10'
-        }`}
+        className={`p-1 rounded transition-all duration-200 ${orientation === 'TD' ? 'bg-white/20' : 'hover:bg-white/10'
+          }`}
         title="Top to Bottom (T)"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -45,9 +44,8 @@ export const DiagramControls = ({
       </button>
       <button
         onClick={() => handleOrientationChange('LR')}
-        className={`p-1 rounded transition-all duration-200 ${
-          orientation === 'LR' ? 'bg-white/20' : 'hover:bg-white/10'
-        }`}
+        className={`p-1 rounded transition-all duration-200 ${orientation === 'LR' ? 'bg-white/20' : 'hover:bg-white/10'
+          }`}
         title="Left to Right (T)"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -61,13 +59,12 @@ export const DiagramControls = ({
       <button
         onClick={() => handleScaleChange(Math.max(0.5, scale - 0.1))}
         disabled={!canDecreaseScale}
-        className={`p-1 rounded transition-all duration-200 ${
-          !canDecreaseScale 
-            ? 'opacity-50 cursor-not-allowed' 
-            : 'hover:bg-white/10'
-        }`}
-        title={!canDecreaseScale 
-          ? "Cannot decrease scale further" 
+        className={`p-1 rounded transition-all duration-200 ${!canDecreaseScale
+          ? 'opacity-50 cursor-not-allowed'
+          : 'hover:bg-white/10'
+          }`}
+        title={!canDecreaseScale
+          ? "Cannot decrease scale further"
           : "Zoom out (- or _)"
         }
       >
@@ -75,7 +72,7 @@ export const DiagramControls = ({
           <path d="M5 12h14" />
         </svg>
       </button>
-      <span 
+      <span
         className="text-xs sm:text-sm min-w-[3rem] text-center"
         title="Current zoom level (0 to reset)"
       >
@@ -84,13 +81,12 @@ export const DiagramControls = ({
       <button
         onClick={() => handleScaleChange(Math.min(2, scale + 0.1))}
         disabled={!canIncreaseScale}
-        className={`p-1 rounded transition-all duration-200 ${
-          !canIncreaseScale 
-            ? 'opacity-50 cursor-not-allowed' 
-            : 'hover:bg-white/10'
-        }`}
-        title={!canIncreaseScale 
-          ? "Cannot increase scale due to diagram overflow" 
+        className={`p-1 rounded transition-all duration-200 ${!canIncreaseScale
+          ? 'opacity-50 cursor-not-allowed'
+          : 'hover:bg-white/10'
+          }`}
+        title={!canIncreaseScale
+          ? "Cannot increase scale due to diagram overflow"
           : "Zoom in (+ or =)"
         }
       >
@@ -106,9 +102,8 @@ export const DiagramControls = ({
         <button
           key={key}
           onClick={() => setCurrentTheme(key)}
-          className={`w-6 h-6 rounded-full border-2 transition-all duration-200 ${
-            currentTheme === key ? 'border-white' : 'border-transparent'
-          }`}
+          className={`w-6 h-6 rounded-full border-2 transition-all duration-200 ${currentTheme === key ? 'border-white' : 'border-transparent'
+            }`}
           style={{ backgroundColor: theme.color }}
           title={`Switch to ${theme.name} theme`}
         />
@@ -121,11 +116,10 @@ export const DiagramControls = ({
         <button
           onClick={onPrevSlide}
           disabled={currentSlide === 0}
-          className={`p-1 rounded transition-all duration-200 ${
-            currentSlide === 0 
-              ? 'opacity-50 cursor-not-allowed' 
-              : 'hover:bg-white/10'
-          }`}
+          className={`p-1 rounded transition-all duration-200 ${currentSlide === 0
+            ? 'opacity-50 cursor-not-allowed'
+            : 'hover:bg-white/10'
+            }`}
           title="Previous slide (Left Arrow or J)"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -138,11 +132,10 @@ export const DiagramControls = ({
         <button
           onClick={onNextSlide}
           disabled={currentSlide === totalSlides - 1}
-          className={`p-1 rounded transition-all duration-200 ${
-            currentSlide === totalSlides - 1 
-              ? 'opacity-50 cursor-not-allowed' 
-              : 'hover:bg-white/10'
-          }`}
+          className={`p-1 rounded transition-all duration-200 ${currentSlide === totalSlides - 1
+            ? 'opacity-50 cursor-not-allowed'
+            : 'hover:bg-white/10'
+            }`}
           title="Next slide (Right Arrow or L)"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
