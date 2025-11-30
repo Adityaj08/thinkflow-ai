@@ -706,7 +706,7 @@ export const useDiagramLogic = () => {
 
     const handleScaleChange = (newScale) => {
         // Apply the new scale if it's within bounds
-        if (newScale >= 0.5 && newScale <= 2) {
+        if (newScale >= 0.5 && newScale <= 5) {
             setScale(newScale);
             if (diagramRef.current) {
                 const svg = diagramRef.current.querySelector('svg');
@@ -750,7 +750,7 @@ export const useDiagramLogic = () => {
     };
 
     const canIncreaseScale = () => {
-        return scale < 2;
+        return scale < 5;
     };
 
     const canDecreaseScale = () => {
@@ -789,12 +789,12 @@ export const useDiagramLogic = () => {
                 case '=':
                 case '+':
                     e.preventDefault();
-                    handleScaleChange(Math.min(2, scale + 0.1));
+                    handleScaleChange(scale + 0.1);
                     break;
                 case '-':
                 case '_':
                     e.preventDefault();
-                    handleScaleChange(Math.max(0.5, scale - 0.1));
+                    handleScaleChange(scale - 0.1);
                     break;
                 case '0':
                     e.preventDefault();
