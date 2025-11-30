@@ -57,7 +57,7 @@ export const DiagramControls = ({
     {/* Scale Controls */}
     <div className="flex items-center gap-1">
       <button
-        onClick={() => handleScaleChange(Math.max(0.5, scale - 0.1))}
+        onClick={() => handleScaleChange(scale - 0.1)}
         disabled={!canDecreaseScale}
         className={`p-1 rounded transition-all duration-200 ${!canDecreaseScale
           ? 'opacity-50 cursor-not-allowed'
@@ -79,7 +79,7 @@ export const DiagramControls = ({
         {Math.round(scale * 100)}%
       </span>
       <button
-        onClick={() => handleScaleChange(Math.min(2, scale + 0.1))}
+        onClick={() => handleScaleChange(scale + 0.1)}
         disabled={!canIncreaseScale}
         className={`p-1 rounded transition-all duration-200 ${!canIncreaseScale
           ? 'opacity-50 cursor-not-allowed'
@@ -145,4 +145,4 @@ export const DiagramControls = ({
       </div>
     )}
   </div>
-); 
+);
