@@ -28,6 +28,8 @@ export const useDiagramLogic = () => {
     const [isExportOpen, setIsExportOpen] = useState(false);
     const [toast, setToast] = useState(null);
     const [copyToast, setCopyToast] = useState(null);
+    const [isEditInputOpen, setIsEditInputOpen] = useState(false);
+    const [editInputValue, setEditInputValue] = useState("");
 
     // Check if user is admin
     const isAdmin = user && user['https://thinkflow.ai/roles']?.includes('admin');
@@ -397,6 +399,75 @@ export const useDiagramLogic = () => {
         }
     };
 
+    const toggleEditInput = () => {
+        setIsEditInputOpen(prev => !prev);
+        if (!isEditInputOpen) {
+            setEditInputValue("");
+        }
+    };
+
+    const updateDiagram = async (updatePrompt) => {
+        // Close input box immediately
+        setIsEditInputOpen(false);
+        setEditInputValue("");
+
+        try {
+            setIsLoading(true);
+            const apiKey = useApiKey1 ? import.meta.env.VITE_GEMINI_API_KEY1 : import.meta.env.VITE_GEMINI_API_KEY2;
+            const diagramRes = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `Update this Mermaid.js diagram based on the following request: "${updatePrompt}".
+                                
+                                Current Diagram Code:
+                                ${code}
+
+                                Return ONLY the updated Mermaid.js code without any explanation or markdown formatting.
+                                Do not include \`\`\`mermaid or any other markdown. Only output the actual mermaid code.
+                                The diagram should use ${orientation} orientation.`
+                            }]
+                        }],
+                    }),
+                }
+            );
+            const diagramData = await diagramRes.json();
+            const generated = diagramData?.candidates?.[0]?.content?.parts?.[0]?.text || code;
+
+            const cleanCode = generated.replace(/```(?:mermaid)?\n?|\n?```/g, '').trim();
+            const codeWithOrientation = cleanCode.replace(/graph (TD|LR|BT|RL)/, `graph ${orientation}`);
+            setCode(codeWithOrientation);
+
+            // Reset controls
+            setScale(1);
+            if (diagramRef.current) {
+                const svg = diagramRef.current.querySelector('svg');
+                const container = diagramRef.current;
+                if (svg) {
+                    svg.style.transform = 'scale(1)';
+                    svg.style.transformOrigin = 'center center';
+                    container.style.transition = 'none';
+                    container.style.height = '500px';
+                }
+            }
+
+            // Force re-render
+            if (diagramRef.current) {
+                diagramRef.current.innerHTML = `<div class="mermaid">${codeWithOrientation}</div>`;
+                await mermaid.contentLoaded();
+            }
+        } catch (error) {
+            console.error('Error updating diagram:', error);
+            showToast("Failed to update diagram", "error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const analyzeDiagram = async () => {
         try {
             setIsAnalyzing(true);
@@ -739,6 +810,12 @@ export const useDiagramLogic = () => {
                 case 't':
                     handleOrientationChange(orientation === 'TD' ? 'LR' : 'TD');
                     break;
+                case 'e':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        toggleEditInput();
+                    }
+                    break;
             }
         };
 
@@ -797,7 +874,13 @@ export const useDiagramLogic = () => {
         copyToast, setCopyToast,
         toggleSlideshowMode,
         renderDiagram,
+        toggleSlideshowMode,
+        renderDiagram,
         saveDiagram,
+        isEditInputOpen, setIsEditInputOpen,
+        editInputValue, setEditInputValue,
+        toggleEditInput,
+        updateDiagram,
         generateDiagram,
         analyzeDiagram,
         downloadDiagram,
