@@ -91,6 +91,14 @@ export default function App() {
           diagramRef={diagramRef}
         />
 
+        <PromptSection
+          prompt={prompt}
+          setPrompt={setPrompt}
+          isLoading={isLoading}
+          isDarkMode={isDarkMode}
+          generateDiagram={generateDiagram}
+        />
+
         <DiagramSection
           fullscreenRef={fullscreenRef}
           isLoading={isLoading}
