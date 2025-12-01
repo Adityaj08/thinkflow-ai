@@ -521,6 +521,11 @@ export const useDiagramLogic = () => {
 
             // Create a new SVG with white background
             const newSvg = svg.cloneNode(true);
+
+            // Remove any transforms from the clone to prevent double scaling/cropping
+            newSvg.style.transform = 'none';
+            newSvg.style.transformOrigin = 'center center';
+
             const width = Math.max(svg.getBoundingClientRect().width, 800);
             const height = Math.max(svg.getBoundingClientRect().height, 600);
 

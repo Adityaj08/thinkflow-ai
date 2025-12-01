@@ -13,20 +13,6 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
   const handleShare = async (format) => {
     try {
       showToast('Uploading diagram to cloud...', 'loading');
-      const svgElement = document.querySelector('.mermaid svg');
-      if (!svgElement) {
-        showToast('No diagram found to share', 'error');
-        return;
-      }
-
-      // Create a new SVG with watermark
-      const newSvg = svgElement.cloneNode(true);
-      const width = Math.max(svgElement.getBoundingClientRect().width, 800);
-      const height = Math.max(svgElement.getBoundingClientRect().height, 600);
-
-      // Set the dimensions and background
-      newSvg.setAttribute('width', width);
-      newSvg.setAttribute('height', height);
       newSvg.style.backgroundColor = 'white';
 
       // Create a white background rectangle
@@ -51,25 +37,25 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const pixelRatio = window.devicePixelRatio || 1;
-        
+
         canvas.width = width * pixelRatio;
         canvas.height = height * pixelRatio;
-        
+
         // Scale canvas for high DPI displays
         ctx.scale(pixelRatio, pixelRatio);
-        
+
         // Draw white background
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, width, height);
-        
+
         // Convert SVG to image
         const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(newSvg))));
-        
+
         await new Promise((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
             ctx.drawImage(img, 0, 0, width, height);
-            
+
             // Add watermark to canvas
             watermark.addWatermarkToCanvas(ctx, () => {
               // Convert to blob
