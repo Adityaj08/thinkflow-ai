@@ -738,7 +738,7 @@ export const useDiagramLogic = () => {
                         // Adjust container height with smooth transition
                         const minHeight = 500; // Minimum height in pixels
                         const newContainerHeight = Math.max(minHeight, newHeight);
-                        container.style.height = `${newContainerHeight}px`;
+                        container.style.height = `${newContainerHeight} px`;
 
                         // Clean up transitions after animation completes
                         const cleanup = () => {
