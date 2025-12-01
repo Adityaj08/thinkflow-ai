@@ -31,8 +31,9 @@ export const useDiagramLogic = () => {
     const [isEditInputOpen, setIsEditInputOpen] = useState(false);
     const [editInputValue, setEditInputValue] = useState("");
 
-    // Check if user is admin
+    // Check if user is admin or pro
     const isAdmin = user && user['https://thinkflow.ai/roles']?.includes('admin');
+    const isPro = user && user['https://thinkflow.ai/roles']?.includes('pro');
 
     // Preload logo image for exports
     useEffect(() => {
@@ -571,8 +572,8 @@ export const useDiagramLogic = () => {
                 newSvg.style.backgroundColor = 'transparent';
             }
 
-            // Add watermark only if not admin
-            if (!isAdmin) {
+            // Add watermark only if not admin or pro
+            if (!isAdmin && !isPro) {
                 const watermark = new Watermark(width, height);
                 await watermark.preloadLogo();
                 watermark.addWatermarkToSvg(newSvg);
@@ -612,8 +613,8 @@ export const useDiagramLogic = () => {
                 img.onload = () => {
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Add watermark to canvas only if not admin
-                    if (!isAdmin) {
+                    // Add watermark to canvas only if not admin or pro
+                    if (!isAdmin && !isPro) {
                         const watermark = new Watermark(width, height);
                         watermark.addWatermarkToCanvas(ctx, () => {
                             // Convert to blob
