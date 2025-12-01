@@ -1,4 +1,4 @@
-import { FullscreenIcon, ExitFullscreenIcon } from './icons';
+import { FullscreenIcon, ExitFullscreenIcon, EditIcon } from './icons';
 
 export const DiagramControls = ({
   isDarkMode,
@@ -17,13 +17,22 @@ export const DiagramControls = ({
   onPrevSlide,
   onNextSlide,
   canIncreaseScale,
-  canDecreaseScale
+  canDecreaseScale,
+  toggleEditInput
 }) => (
   <div className={`absolute top-2 right-0 sm:right-2 flex flex-wrap items-center gap-2 z-10 p-2 mx-1 sm:mx-0 rounded-lg 
     ${isDarkMode ? 'bg-white/10 backdrop-blur-md' : 'bg-black/10 backdrop-blur-md'}`}
   >
     {/* Fullscreen and Orientation Controls */}
     <div className="flex gap-1">
+      <button
+        onClick={toggleEditInput}
+        className="p-1 rounded hover:bg-white/10 transition-all duration-200"
+        title="Edit Diagram"
+      >
+        <EditIcon />
+      </button>
+
       <button
         onClick={toggleFullscreen}
         className="p-1 rounded hover:bg-white/10 transition-all duration-200"

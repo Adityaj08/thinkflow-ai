@@ -63,7 +63,8 @@ export default function App() {
     setIsEditInputOpen,
     editInputValue,
     setEditInputValue,
-    updateDiagram
+    updateDiagram,
+    toggleEditInput
   } = useDiagramLogic();
 
   return (
@@ -120,6 +121,7 @@ export default function App() {
           setCurrentSlide={setCurrentSlide}
           canIncreaseScale={canIncreaseScale()}
           canDecreaseScale={canDecreaseScale()}
+          toggleEditInput={toggleEditInput}
         />
 
         <ExplanationSection
