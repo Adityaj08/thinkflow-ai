@@ -508,7 +508,7 @@ export const useDiagramLogic = () => {
         }
     };
 
-    const downloadDiagram = async (format, returnBlob = false) => {
+    const downloadDiagram = async (format, quality = '1080p', background = 'white', returnBlob = false) => {
         try {
             // Get the mermaid container and SVG
             const mermaidContainer = diagramRef.current.querySelector('.mermaid');
@@ -521,20 +521,55 @@ export const useDiagramLogic = () => {
 
             // Create a new SVG with white background
             const newSvg = svg.cloneNode(true);
-            const width = Math.max(svg.getBoundingClientRect().width, 800);
-            const height = Math.max(svg.getBoundingClientRect().height, 600);
+
+            // Remove any transforms from the clone to prevent double scaling/cropping
+            newSvg.style.transform = 'none';
+            newSvg.style.transformOrigin = 'center center';
+
+            // Calculate dimensions based on quality
+            const originalWidth = svg.getBoundingClientRect().width;
+            const originalHeight = svg.getBoundingClientRect().height;
+            const aspectRatio = originalWidth / originalHeight;
+
+            let targetHeight;
+            switch (quality) {
+                case '720p':
+                    targetHeight = 720;
+                    break;
+                case '1080p':
+                    targetHeight = 1080;
+                    break;
+                case '2k':
+                    targetHeight = 1440;
+                    break;
+                case '4k':
+                    targetHeight = 2160;
+                    break;
+                default:
+                    targetHeight = 1080;
+            }
+
+            // Ensure we don't upscale if the original is smaller (optional, but good for quality)
+            // For diagrams, upscaling is usually fine as it's vector data
+            const height = targetHeight;
+            const width = height * aspectRatio;
 
             // Set the dimensions and background
             newSvg.setAttribute('width', width);
             newSvg.setAttribute('height', height);
-            newSvg.style.backgroundColor = 'white';
 
-            // Create a white background rectangle
-            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('width', '100%');
-            rect.setAttribute('height', '100%');
-            rect.setAttribute('fill', 'white');
-            newSvg.insertBefore(rect, newSvg.firstChild);
+            if (background !== 'transparent') {
+                newSvg.style.backgroundColor = background;
+
+                // Create a background rectangle
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('width', '100%');
+                rect.setAttribute('height', '100%');
+                rect.setAttribute('fill', background);
+                newSvg.insertBefore(rect, newSvg.firstChild);
+            } else {
+                newSvg.style.backgroundColor = 'transparent';
+            }
 
             // Add watermark only if not admin
             if (!isAdmin) {
@@ -564,9 +599,10 @@ export const useDiagramLogic = () => {
             // Scale canvas for high DPI displays
             ctx.scale(pixelRatio, pixelRatio);
 
-            // Draw white background
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, width, height);
+            if (background !== 'transparent') {
+                ctx.fillStyle = background;
+                ctx.fillRect(0, 0, width, height);
+            }
 
             // Convert SVG to image
             const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(newSvg))));
@@ -733,7 +769,7 @@ export const useDiagramLogic = () => {
                         // Adjust container height with smooth transition
                         const minHeight = 500; // Minimum height in pixels
                         const newContainerHeight = Math.max(minHeight, newHeight);
-                        container.style.height = `${newContainerHeight}px`;
+                        container.style.height = `${newContainerHeight} px`;
 
                         // Clean up transitions after animation completes
                         const cleanup = () => {

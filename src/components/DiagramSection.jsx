@@ -23,7 +23,8 @@ export const DiagramSection = ({
     themes,
     setCurrentSlide,
     canIncreaseScale,
-    canDecreaseScale
+    canDecreaseScale,
+    toggleEditInput
 }) => {
     return (
         <div className="relative mb-4" ref={fullscreenRef}>
@@ -57,6 +58,7 @@ export const DiagramSection = ({
                 onNextSlide={() => setCurrentSlide(prev => Math.min(diagramParts.length - 1, prev + 1))}
                 canIncreaseScale={canIncreaseScale}
                 canDecreaseScale={canDecreaseScale}
+                toggleEditInput={toggleEditInput}
             />
 
             <div

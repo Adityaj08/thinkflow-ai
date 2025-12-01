@@ -63,7 +63,8 @@ export default function App() {
     setIsEditInputOpen,
     editInputValue,
     setEditInputValue,
-    updateDiagram
+    updateDiagram,
+    toggleEditInput
   } = useDiagramLogic();
 
   return (
@@ -87,14 +88,7 @@ export default function App() {
           setIsOptionsOpen={setIsOptionsOpen}
           currentTheme={currentTheme}
           setCurrentTheme={setCurrentTheme}
-        />
-
-        <PromptSection
-          prompt={prompt}
-          setPrompt={setPrompt}
-          isLoading={isLoading}
-          isDarkMode={isDarkMode}
-          generateDiagram={generateDiagram}
+          diagramRef={diagramRef}
         />
 
         <DiagramSection
@@ -120,6 +114,7 @@ export default function App() {
           setCurrentSlide={setCurrentSlide}
           canIncreaseScale={canIncreaseScale()}
           canDecreaseScale={canDecreaseScale()}
+          toggleEditInput={toggleEditInput}
         />
 
         <ExplanationSection

@@ -19,7 +19,8 @@ export const Header = ({
     isOptionsOpen,
     setIsOptionsOpen,
     currentTheme,
-    setCurrentTheme
+    setCurrentTheme,
+    diagramRef
 }) => {
     return (
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
@@ -31,8 +32,8 @@ export const Header = ({
                 <button
                     onClick={toggleDarkMode}
                     className={`p-2 rounded-full transition-all duration-200 ${isDarkMode
-                            ? 'bg-white/10 hover:bg-white/20'
-                            : 'bg-gray-200 hover:bg-gray-300'
+                        ? 'bg-white/10 hover:bg-white/20'
+                        : 'bg-gray-200 hover:bg-gray-300'
                         }`}
                     title="Toggle dark mode (D)"
                 >
@@ -42,8 +43,8 @@ export const Header = ({
                     <button
                         onClick={() => setShowApiKeyMenu(!showApiKeyMenu)}
                         className={`p-2 rounded-full transition-all duration-200 flex items-center gap-2 ${isDarkMode
-                                ? 'bg-white/10 hover:bg-white/20'
-                                : 'bg-gray-200 hover:bg-gray-300'
+                            ? 'bg-white/10 hover:bg-white/20'
+                            : 'bg-gray-200 hover:bg-gray-300'
                             }`}
                         title="Select API Key"
                     >
@@ -83,8 +84,8 @@ export const Header = ({
                 <button
                     onClick={toggleSlideshowMode}
                     className={`p-2 rounded-full transition-all duration-200 ${isDarkMode
-                            ? 'bg-white/10 hover:bg-white/20'
-                            : 'bg-gray-200 hover:bg-gray-300'
+                        ? 'bg-white/10 hover:bg-white/20'
+                        : 'bg-gray-200 hover:bg-gray-300'
                         }`}
                     title="Toggle slideshow mode (Space)"
                 >
@@ -94,8 +95,8 @@ export const Header = ({
                     <button
                         onClick={() => setIsExportOpen(!isExportOpen)}
                         className={`p-2 rounded-full transition-all duration-200 ${isDarkMode
-                                ? 'bg-white/10 hover:bg-white/20'
-                                : 'bg-gray-200 hover:bg-gray-300'
+                            ? 'bg-white/10 hover:bg-white/20'
+                            : 'bg-gray-200 hover:bg-gray-300'
                             }`}
                         title="Export"
                     >
@@ -111,6 +112,7 @@ export const Header = ({
                             downloadDiagram={downloadDiagram}
                             setIsExportOpen={setIsExportOpen}
                             showToast={showToast}
+                            diagramRef={diagramRef}
                         />
                     )}
                 </div>
@@ -118,8 +120,8 @@ export const Header = ({
                     <button
                         onClick={() => setIsOptionsOpen(!isOptionsOpen)}
                         className={`p-2 rounded-full transition-all duration-200 ${isDarkMode
-                                ? 'bg-white/10 hover:bg-white/20'
-                                : 'bg-gray-200 hover:bg-gray-300'
+                            ? 'bg-white/10 hover:bg-white/20'
+                            : 'bg-gray-200 hover:bg-gray-300'
                             }`}
                         title="Options menu"
                     >
