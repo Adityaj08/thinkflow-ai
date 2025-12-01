@@ -88,14 +88,7 @@ export default function App() {
           setIsOptionsOpen={setIsOptionsOpen}
           currentTheme={currentTheme}
           setCurrentTheme={setCurrentTheme}
-        />
-
-        <PromptSection
-          prompt={prompt}
-          setPrompt={setPrompt}
-          isLoading={isLoading}
-          isDarkMode={isDarkMode}
-          generateDiagram={generateDiagram}
+          diagramRef={diagramRef}
         />
 
         <DiagramSection
