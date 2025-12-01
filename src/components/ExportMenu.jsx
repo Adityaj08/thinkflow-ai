@@ -11,6 +11,7 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
   const [background, setBackground] = useState('white');
   const { user } = useAuth0();
   const isAdmin = user && user['https://thinkflow.ai/roles']?.includes('admin');
+  const isPro = user && user['https://thinkflow.ai/roles']?.includes('pro');
 
   const handleShare = async (format) => {
     try {
@@ -75,7 +76,7 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
       }
 
       // Add watermark
-      if (!isAdmin) {
+      if (!isAdmin && !isPro) {
         const watermark = new Watermark(width, height);
         await watermark.preloadLogo();
         watermark.addWatermarkToSvg(newSvg);
@@ -112,7 +113,7 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
             ctx.drawImage(img, 0, 0, width, height);
 
             // Add watermark to canvas
-            if (!isAdmin) {
+            if (!isAdmin && !isPro) {
               const watermark = new Watermark(width, height);
               watermark.addWatermarkToCanvas(ctx, () => {
                 // Convert to blob
@@ -232,9 +233,11 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
       ${isDarkMode ? 'bg-black/30 border border-white/10' : 'bg-white/80 border border-gray-200'}
       transition-all duration-200 z-20`}>
       <div className="p-2 space-y-2">
-        {isAdmin && (
+        {(isAdmin || isPro) && (
           <div className="px-3 py-2 flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Admin</span>
+            <span className={`px-2 py-0.5 text-xs rounded-full ${isAdmin ? 'bg-emerald-500/20 text-emerald-400' : 'bg-blue-500/20 text-blue-400'}`}>
+              {isAdmin ? 'Admin' : 'Pro'}
+            </span>
             <span className="text-xs text-gray-400">Watermark-free downloads</span>
           </div>
         )}
@@ -248,8 +251,8 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
                 key={q}
                 onClick={() => setQuality(q)}
                 className={`px-2 py-1 text-xs rounded border transition-colors ${quality === q
-                    ? 'bg-blue-500/20 border-blue-500 text-blue-400'
-                    : 'border-transparent hover:bg-white/5 text-gray-400'
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-400'
+                  : 'border-transparent hover:bg-white/5 text-gray-400'
                   }`}
               >
                 {q}
@@ -258,17 +261,17 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
             {['2k', '4k'].map(q => (
               <button
                 key={q}
-                onClick={() => isAdmin ? setQuality(q) : null}
-                disabled={!isAdmin}
+                onClick={() => (isAdmin || isPro) ? setQuality(q) : null}
+                disabled={!isAdmin && !isPro}
                 className={`px-2 py-1 text-xs rounded border transition-colors ${quality === q
-                    ? 'bg-blue-500/20 border-blue-500 text-blue-400'
-                    : !isAdmin
-                      ? 'opacity-50 cursor-not-allowed border-transparent text-gray-500'
-                      : 'border-transparent hover:bg-white/5 text-gray-400'
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-400'
+                  : (!isAdmin && !isPro)
+                    ? 'opacity-50 cursor-not-allowed border-transparent text-gray-500'
+                    : 'border-transparent hover:bg-white/5 text-gray-400'
                   }`}
-                title={!isAdmin ? "Upgrade to Pro for 2K/4K export" : ""}
+                title={(!isAdmin && !isPro) ? "Upgrade to Pro for 2K/4K export" : ""}
               >
-                {q} {!isAdmin && '🔒'}
+                {q} {(!isAdmin && !isPro) && '🔒'}
               </button>
             ))}
           </div>
@@ -287,8 +290,8 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
                 key={bg.id}
                 onClick={() => setBackground(bg.id)}
                 className={`flex-1 px-2 py-1 text-xs rounded border transition-colors ${background === bg.id
-                    ? 'bg-blue-500/20 border-blue-500 text-blue-400'
-                    : 'border-transparent hover:bg-white/5 text-gray-400'
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-400'
+                  : 'border-transparent hover:bg-white/5 text-gray-400'
                   }`}
               >
                 {bg.label}
