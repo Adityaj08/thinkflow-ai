@@ -64,7 +64,12 @@ export default function App() {
     editInputValue,
     setEditInputValue,
     updateDiagram,
-    toggleEditInput
+    toggleEditInput,
+    undo,
+    redo,
+    historyIndex,
+    history,
+    clearStorage
   } = useDiagramLogic();
 
   return (
@@ -89,6 +94,7 @@ export default function App() {
           currentTheme={currentTheme}
           setCurrentTheme={setCurrentTheme}
           diagramRef={diagramRef}
+          clearStorage={clearStorage}
         />
 
         <PromptSection
@@ -123,6 +129,10 @@ export default function App() {
           canIncreaseScale={canIncreaseScale()}
           canDecreaseScale={canDecreaseScale()}
           toggleEditInput={toggleEditInput}
+          undo={undo}
+          redo={redo}
+          canUndo={historyIndex > 0}
+          canRedo={historyIndex < history.length - 1}
         />
 
         <ExplanationSection
