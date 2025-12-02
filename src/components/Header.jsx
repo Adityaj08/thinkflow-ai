@@ -20,7 +20,8 @@ export const Header = ({
     setIsOptionsOpen,
     currentTheme,
     setCurrentTheme,
-    diagramRef
+    diagramRef,
+    clearStorage
 }) => {
     return (
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
@@ -133,6 +134,7 @@ export const Header = ({
                             currentTheme={currentTheme}
                             setCurrentTheme={setCurrentTheme}
                             setIsOptionsOpen={setIsOptionsOpen}
+                            clearStorage={clearStorage}
                         />
                     )}
                 </div>

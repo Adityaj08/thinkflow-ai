@@ -18,7 +18,11 @@ export const DiagramControls = ({
   onNextSlide,
   canIncreaseScale,
   canDecreaseScale,
-  toggleEditInput
+  toggleEditInput,
+  undo,
+  redo,
+  canUndo,
+  canRedo
 }) => (
   <div className={`absolute top-2 right-0 sm:right-2 flex flex-wrap items-center gap-2 z-10 p-2 mx-1 sm:mx-0 rounded-lg 
     ${isDarkMode ? 'bg-white/10 backdrop-blur-md' : 'bg-black/10 backdrop-blur-md'}`}
@@ -31,6 +35,30 @@ export const DiagramControls = ({
         title="Edit Diagram"
       >
         <EditIcon />
+      </button>
+
+      <button
+        onClick={undo}
+        disabled={!canUndo}
+        className={`p-1 rounded transition-all duration-200 ${!canUndo ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
+        title="Undo"
+      >
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 14L4 9l5-5" />
+          <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+        </svg>
+      </button>
+
+      <button
+        onClick={redo}
+        disabled={!canRedo}
+        className={`p-1 rounded transition-all duration-200 ${!canRedo ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
+        title="Redo"
+      >
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 14l5-5-5-5" />
+          <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
+        </svg>
       </button>
 
       <button

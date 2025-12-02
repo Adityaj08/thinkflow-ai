@@ -30,6 +30,9 @@ export const useDiagramLogic = () => {
     const [copyToast, setCopyToast] = useState(null);
     const [isEditInputOpen, setIsEditInputOpen] = useState(false);
     const [editInputValue, setEditInputValue] = useState("");
+    const [history, setHistory] = useState([localStorage.getItem("diagram") || `graph TD\nA[Start] --> B{Decision}`]);
+    const [historyIndex, setHistoryIndex] = useState(0);
+
 
     // Check if user is admin or pro
     const isAdmin = user && user['https://thinkflow.ai/roles']?.includes('admin');
@@ -372,6 +375,10 @@ export const useDiagramLogic = () => {
             const codeWithOrientation = cleanCode.replace(/graph (TD|LR|BT|RL)/, `graph ${orientation}`);
             setCode(codeWithOrientation);
 
+            // Reset history for new diagram generation
+            setHistory([codeWithOrientation]);
+            setHistoryIndex(0);
+
             // Reset controls to default values
             setScale(1);
             if (diagramRef.current) {
@@ -442,6 +449,12 @@ export const useDiagramLogic = () => {
             const cleanCode = generated.replace(/```(?:mermaid)?\n?|\n?```/g, '').trim();
             const codeWithOrientation = cleanCode.replace(/graph (TD|LR|BT|RL)/, `graph ${orientation}`);
             setCode(codeWithOrientation);
+
+            // Update history
+            const newHistory = history.slice(0, historyIndex + 1);
+            newHistory.push(codeWithOrientation);
+            setHistory(newHistory);
+            setHistoryIndex(newHistory.length - 1);
 
             // Reset controls
             setScale(1);
@@ -794,6 +807,31 @@ export const useDiagramLogic = () => {
         return scale > 0.5;
     };
 
+    const undo = () => {
+        if (historyIndex > 0) {
+            const newIndex = historyIndex - 1;
+            setHistoryIndex(newIndex);
+            setCode(history[newIndex]);
+        }
+    };
+
+    const redo = () => {
+        if (historyIndex < history.length - 1) {
+            const newIndex = historyIndex + 1;
+            setHistoryIndex(newIndex);
+            setCode(history[newIndex]);
+        }
+    };
+
+    const clearStorage = () => {
+        localStorage.removeItem("diagram");
+        const defaultCode = `graph TD\nA[Start] --> B{Decision}`;
+        setCode(defaultCode);
+        setHistory([defaultCode]);
+        setHistoryIndex(0);
+        showToast("Local storage cleared", "success");
+    };
+
     // Handle keyboard shortcuts
     useEffect(() => {
         const handleKeyPress = (e) => {
@@ -929,6 +967,11 @@ export const useDiagramLogic = () => {
         canDecreaseScale,
         selectApiKey,
         showToast,
-        handleToastClose
+        handleToastClose,
+        undo,
+        redo,
+        historyIndex,
+        history,
+        clearStorage
     };
 };
