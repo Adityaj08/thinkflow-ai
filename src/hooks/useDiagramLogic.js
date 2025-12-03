@@ -891,12 +891,24 @@ export const useDiagramLogic = () => {
                         toggleEditInput();
                     }
                     break;
+                case 'z':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        undo();
+                    }
+                    break;
+                case 'y':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        redo();
+                    }
+                    break;
             }
         };
 
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [isSlideshowMode, scale, orientation, diagramParts.length, currentSlide]);
+    }, [isSlideshowMode, scale, orientation, diagramParts.length, currentSlide, historyIndex, history]);
 
     // Add a function to handle API key selection
     const selectApiKey = (useKey1) => {
