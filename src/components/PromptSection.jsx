@@ -14,10 +14,15 @@ export const PromptSection = ({
                     type="text"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && prompt.trim() && !isLoading) {
+                            generateDiagram();
+                        }
+                    }}
                     disabled={isLoading}
                     className={`w-full p-2 rounded-lg transition-all duration-200 ${isDarkMode
-                            ? 'bg-white/10 border border-white/10 text-white placeholder-white/50'
-                            : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-400'
+                        ? 'bg-white/10 border border-white/10 text-white placeholder-white/50'
+                        : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-400'
                         } ${isLoading && 'opacity-50 cursor-not-allowed'}`}
                     placeholder="Describe your diagram..."
                 />
