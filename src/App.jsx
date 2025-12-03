@@ -7,7 +7,7 @@ import { ExplanationSection } from "./components/ExplanationSection";
 import { HelpMenu } from "./components/HelpMenu";
 import ScrollToTop from "./components/ScrollToTop";
 import { Toast } from "./components/Toast";
-import { EditInputBox } from "./components/EditInputBox";
+
 import { themes } from "./constants/themes";
 
 // Add Montserrat font import
@@ -133,6 +133,11 @@ export default function App() {
           redo={redo}
           canUndo={historyIndex > 0}
           canRedo={historyIndex < history.length - 1}
+          isEditInputOpen={isEditInputOpen}
+          setIsEditInputOpen={setIsEditInputOpen}
+          editInputValue={editInputValue}
+          setEditInputValue={setEditInputValue}
+          updateDiagram={updateDiagram}
         />
 
         <ExplanationSection
@@ -167,15 +172,7 @@ export default function App() {
         />
       )}
 
-      <EditInputBox
-        isOpen={isEditInputOpen}
-        onClose={() => setIsEditInputOpen(false)}
-        onSubmit={updateDiagram}
-        value={editInputValue}
-        setValue={setEditInputValue}
-        isLoading={isLoading}
-        isDarkMode={isDarkMode}
-      />
+
     </div>
   );
 }

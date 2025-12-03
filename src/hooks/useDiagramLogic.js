@@ -348,6 +348,23 @@ export const useDiagramLogic = () => {
         alert("Diagram saved!");
     };
 
+    const resetView = async (newCode) => {
+        setScale(1);
+        if (diagramRef.current) {
+            const svg = diagramRef.current.querySelector('svg');
+            const container = diagramRef.current;
+            if (svg) {
+                svg.style.transform = 'scale(1)';
+                svg.style.transformOrigin = 'center center';
+                container.style.transition = 'none';
+                container.style.height = '500px';
+            }
+            // Force re-render
+            diagramRef.current.innerHTML = `<div class="mermaid">${newCode}</div>`;
+            await mermaid.contentLoaded();
+        }
+    };
+
     const generateDiagram = async () => {
         try {
             setIsLoading(true);
@@ -379,27 +396,7 @@ export const useDiagramLogic = () => {
             setHistory([codeWithOrientation]);
             setHistoryIndex(0);
 
-            // Reset controls to default values
-            setScale(1);
-            if (diagramRef.current) {
-                const svg = diagramRef.current.querySelector('svg');
-                const container = diagramRef.current;
-                if (svg) {
-                    // Reset scale
-                    svg.style.transform = 'scale(1)';
-                    svg.style.transformOrigin = 'center center';
-
-                    // Reset container height
-                    container.style.transition = 'none';
-                    container.style.height = '500px';
-                }
-            }
-
-            // Force a re-render of the diagram
-            if (diagramRef.current) {
-                diagramRef.current.innerHTML = `<div class="mermaid">${codeWithOrientation}</div>`;
-                await mermaid.contentLoaded();
-            }
+            await resetView(codeWithOrientation);
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -456,24 +453,7 @@ export const useDiagramLogic = () => {
             setHistory(newHistory);
             setHistoryIndex(newHistory.length - 1);
 
-            // Reset controls
-            setScale(1);
-            if (diagramRef.current) {
-                const svg = diagramRef.current.querySelector('svg');
-                const container = diagramRef.current;
-                if (svg) {
-                    svg.style.transform = 'scale(1)';
-                    svg.style.transformOrigin = 'center center';
-                    container.style.transition = 'none';
-                    container.style.height = '500px';
-                }
-            }
-
-            // Force re-render
-            if (diagramRef.current) {
-                diagramRef.current.innerHTML = `<div class="mermaid">${codeWithOrientation}</div>`;
-                await mermaid.contentLoaded();
-            }
+            await resetView(codeWithOrientation);
         } catch (error) {
             console.error('Error updating diagram:', error);
             showToast("Failed to update diagram", "error");
@@ -807,28 +787,33 @@ export const useDiagramLogic = () => {
         return scale > 0.5;
     };
 
-    const undo = () => {
+    const undo = async () => {
         if (historyIndex > 0) {
             const newIndex = historyIndex - 1;
             setHistoryIndex(newIndex);
-            setCode(history[newIndex]);
+            const newCode = history[newIndex];
+            setCode(newCode);
+            await resetView(newCode);
         }
     };
 
-    const redo = () => {
+    const redo = async () => {
         if (historyIndex < history.length - 1) {
             const newIndex = historyIndex + 1;
             setHistoryIndex(newIndex);
-            setCode(history[newIndex]);
+            const newCode = history[newIndex];
+            setCode(newCode);
+            await resetView(newCode);
         }
     };
 
-    const clearStorage = () => {
+    const clearStorage = async () => {
         localStorage.removeItem("diagram");
         const defaultCode = `graph TD\nA[Start] --> B{Decision}`;
         setCode(defaultCode);
         setHistory([defaultCode]);
         setHistoryIndex(0);
+        await resetView(defaultCode);
         showToast("Local storage cleared", "success");
     };
 
@@ -891,12 +876,24 @@ export const useDiagramLogic = () => {
                         toggleEditInput();
                     }
                     break;
+                case 'z':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        undo();
+                    }
+                    break;
+                case 'y':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        redo();
+                    }
+                    break;
             }
         };
 
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [isSlideshowMode, scale, orientation, diagramParts.length, currentSlide]);
+    }, [isSlideshowMode, scale, orientation, diagramParts.length, currentSlide, historyIndex, history]);
 
     // Add a function to handle API key selection
     const selectApiKey = (useKey1) => {

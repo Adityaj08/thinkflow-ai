@@ -1,5 +1,6 @@
 import React from 'react';
 import { DiagramControls } from "./DiagramControls";
+import { EditInputBox } from "./EditInputBox";
 
 export const DiagramSection = ({
     fullscreenRef,
@@ -28,7 +29,12 @@ export const DiagramSection = ({
     undo,
     redo,
     canUndo,
-    canRedo
+    canRedo,
+    isEditInputOpen,
+    setIsEditInputOpen,
+    editInputValue,
+    setEditInputValue,
+    updateDiagram
 }) => {
     return (
         <div className="relative mb-4" ref={fullscreenRef}>
@@ -139,6 +145,16 @@ export const DiagramSection = ({
                     )}
                 </button>
             </div>
+
+            <EditInputBox
+                isOpen={isEditInputOpen}
+                onClose={() => setIsEditInputOpen(false)}
+                onSubmit={updateDiagram}
+                value={editInputValue}
+                setValue={setEditInputValue}
+                isLoading={isLoading}
+                isDarkMode={isDarkMode}
+            />
         </div>
     );
 };
