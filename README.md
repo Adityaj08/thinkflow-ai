@@ -1,42 +1,54 @@
 # ThinkFlow AI
 
-ThinkFlow AI is a modern web application that helps users create, visualize, and analyze flow diagrams using Mermaid.js. The application provides a user-friendly interface for generating diagrams from natural language descriptions and offers various features like dark mode, export options, and diagram analysis.
+![ThinkFlow Logo](ThinkFlow.png)
 
-<div align="center">
-  <img src="ThinkFlow.png" alt="ThinkFlow Logo" width="300" style="border-radius: 12px;"/>
-  
-  <p>
-    <a href="https://react.dev/">
-      <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-    </a>
-    <a href="https://vitejs.dev/">
-      <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-    </a>
-    <a href="https://tailwindcss.com/">
-      <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-    </a>
-    <a href="https://mermaid.js.org/">
-      <img src="https://img.shields.io/badge/Mermaid-ff3670?style=for-the-badge&logo=mermaid&logoColor=white" alt="Mermaid" />
-    </a>
-    <a href="https://ai.google.dev/">
-      <img src="https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
-    </a>
-  </p>
-</div>
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/) [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/) [![Mermaid](https://img.shields.io/badge/Mermaid-ff3670?style=for-the-badge&logo=mermaid&logoColor=white)](https://mermaid.js.org/) 
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white)](https://gemini.google.com/)
+
+## About
+
+ThinkFlow AI is a web application designed to enable users to create, visualize, and analyze flow diagrams. Powered by the advanced capabilities of **Mermaid.js** and **Google Gemini AI**, ThinkFlow AI transforms natural language descriptions into diagrams instantly.
+
+Whether you are documenting complex system architectures or brainstorming workflows, ThinkFlow provides a free environment equipped with tools like real-time visualization, customizable themes, and comprehensive export options to enhance your productivity.
 
 ## Features
 
-- **Intuitive User Interface**: Clean and responsive design for seamless diagram creation.
-- **Dark/Light Mode Support**: Toggle between themes for visual comfort.
 - **Diagram Generation**: Generate complex diagrams using Mermaid.js from text descriptions.
 - **AI Analysis**: Analyze and explain diagrams using Google Gemini API.
 - **Export Options**: Download diagrams as SVG, PNG, or JPG.
-- **Keyboard Shortcuts**: Efficient navigation with shortcuts for zoom, undo/redo, and mode toggling.
 - **Fullscreen Mode**: Edit and view diagrams in distraction-free fullscreen mode.
 - **Slideshow Mode**: Present diagrams effectively with slide navigation.
 - **Real-time Updates**: Instant visual feedback on diagram changes.
 - **Undo/Redo**: Easily correct mistakes with full history support.
 - **Local Storage Management**: Save progress and clear local storage as needed.
+
+## Supported Diagrams
+
+ThinkFlow AI supports a wide range of diagram types to suit various needs:
+
+- **Flowchart**
+- **Sequence Diagram**
+- **Class Diagram**
+- **State Diagram**
+- **Entity Relationship Diagram**
+- **User Journey**
+- **Gantt**
+- **Pie Chart**
+- **Quadrant Chart**
+- **Requirement Diagram**
+- **GitGraph (Git) Diagram**
+- **C4 Diagram** (Experimental)
+- **Mindmaps**
+- **Timeline**
+- **ZenUML**
+- **Sankey** (New)
+- **XY Chart** (New)
+- **Block Diagram** (New)
+- **Packet** (New)
+- **Kanban** (New)
+- **Architecture** (New)
+- **Radar** (New)
+- **Treemap** (New)
 
 ## Getting Started
 
@@ -62,8 +74,10 @@ ThinkFlow AI is a modern web application that helps users create, visualize, and
 
 3. Create a `.env` file in the root directory and add your API keys:
    ```env
-   GEMINI_API_KEY1=your_api_key_1
-   GEMINI_API_KEY2=your_api_key_2
+   VITE_GEMINI_API_KEY1=your_api_key_1
+   VITE_GEMINI_API_KEY2=your_api_key_2
+   VITE_AUTH0_DOMAIN=your_auth0_domain
+   VITE_AUTH0_CLIENT_ID=your_auth0_client_id
    ```
 
 4. Start the development server:
@@ -79,17 +93,8 @@ The application will be available at `http://localhost:5173`
 
 1. Enter your diagram description in the input field.
 2. Click "Generate Diagram" or press Enter.
-3. Use the controls to:
-   - Toggle dark/light mode
-   - Change diagram orientation
-   - Adjust zoom level
-   - Export the diagram
-   - Analyze the diagram
-   - Enter fullscreen mode
-   - Start slideshow mode
-   - Undo/Redo changes
 
-## Keyboard Shortcuts
+### Keyboard Shortcuts
 
 | Key | Action |
 | --- | --- |
@@ -105,14 +110,6 @@ The application will be available at `http://localhost:5173`
 | `T` | Toggle orientation |
 | `Ctrl+Z` | Undo |
 | `Ctrl+Y` | Redo |
-
-## Built With
-
-- **React**: JavaScript library for building user interfaces.
-- **Vite**: Next Generation Frontend Tooling.
-- **Mermaid.js**: Diagramming and charting tool.
-- **Tailwind CSS**: Utility-first CSS framework.
-- **Google Gemini API**: AI model for diagram generation.
 
 ## Contributing
 
