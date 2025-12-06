@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { MoonIcon, SunIcon, OptionsIcon, SlideshowIcon, FullViewIcon } from "./icons";
 import { OptionsMenu } from "./OptionsMenu";
 import { ExportMenu } from "./ExportMenu";
@@ -23,6 +23,34 @@ export const Header = ({
     diagramRef,
     clearStorage
 }) => {
+    const apiKeyMenuRef = useRef(null);
+    const optionsMenuRef = useRef(null);
+    const exportMenuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (showApiKeyMenu && apiKeyMenuRef.current && !apiKeyMenuRef.current.contains(event.target)) {
+                setShowApiKeyMenu(false);
+            }
+            if (isOptionsOpen && optionsMenuRef.current && !optionsMenuRef.current.contains(event.target)) {
+                setIsOptionsOpen(false);
+            }
+            if (isExportOpen && exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
+                setIsExportOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showApiKeyMenu, isOptionsOpen, isExportOpen, setShowApiKeyMenu, setIsOptionsOpen, setIsExportOpen]);
+
+    const handleApiKeySelect = (isKey1) => {
+        selectApiKey(isKey1);
+        setShowApiKeyMenu(false);
+    };
+
     return (
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
             <h1 className="text-2xl sm:text-4xl font-bold relative">
@@ -40,7 +68,7 @@ export const Header = ({
                 >
                     {isDarkMode ? <SunIcon /> : <MoonIcon />}
                 </button>
-                <div className="relative">
+                <div className="relative" ref={apiKeyMenuRef}>
                     <button
                         onClick={() => setShowApiKeyMenu(!showApiKeyMenu)}
                         className={`p-2 rounded-full transition-all duration-200 flex items-center gap-2 ${isDarkMode
@@ -61,7 +89,7 @@ export const Header = ({
                             <div className="p-2 space-y-2">
                                 <div className="px-3 py-2 text-sm font-medium text-gray-400">API Key</div>
                                 <button
-                                    onClick={() => selectApiKey(true)}
+                                    onClick={() => handleApiKeySelect(true)}
                                     className={`w-full px-3 py-2 text-left rounded-md flex items-center space-x-2 
                     ${useApiKey1 ? 'bg-white/10' : 'hover:bg-white/5'}
                     transition-colors duration-200`}
@@ -70,7 +98,7 @@ export const Header = ({
                                     <span className={isDarkMode ? 'text-white' : 'text-gray-700'}>API Key 1</span>
                                 </button>
                                 <button
-                                    onClick={() => selectApiKey(false)}
+                                    onClick={() => handleApiKeySelect(false)}
                                     className={`w-full px-3 py-2 text-left rounded-md flex items-center space-x-2 
                     ${!useApiKey1 ? 'bg-white/10' : 'hover:bg-white/5'}
                     transition-colors duration-200`}
@@ -92,7 +120,7 @@ export const Header = ({
                 >
                     {isSlideshowMode ? <FullViewIcon /> : <SlideshowIcon />}
                 </button>
-                <div className="relative">
+                <div className="relative" ref={exportMenuRef}>
                     <button
                         onClick={() => setIsExportOpen(!isExportOpen)}
                         className={`p-2 rounded-full transition-all duration-200 ${isDarkMode
@@ -117,7 +145,7 @@ export const Header = ({
                         />
                     )}
                 </div>
-                <div className="relative">
+                <div className="relative" ref={optionsMenuRef}>
                     <button
                         onClick={() => setIsOptionsOpen(!isOptionsOpen)}
                         className={`p-2 rounded-full transition-all duration-200 ${isDarkMode
