@@ -12,7 +12,8 @@ export const useDiagramGen = ({
     showToast,
     setIsEditInputOpen,
     setEditInputValue,
-    useApiKey1
+    useApiKey1,
+    historyIndex
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);

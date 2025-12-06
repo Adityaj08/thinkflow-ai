@@ -398,7 +398,7 @@ export const useDiagramInteraction = ({
         }
     };
 
-    const resetView = async (newCode) => {
+    const resetView = () => {
         setScale(1);
         if (diagramRef.current) {
             const svg = diagramRef.current.querySelector('svg');
@@ -409,9 +409,6 @@ export const useDiagramInteraction = ({
                 container.style.transition = 'none';
                 container.style.height = '500px';
             }
-            // Force re-render
-            diagramRef.current.innerHTML = `<div class="mermaid">${newCode}</div>`;
-            await mermaid.contentLoaded();
         }
     };
 

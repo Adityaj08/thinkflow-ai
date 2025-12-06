@@ -96,7 +96,8 @@ export const useDiagramLogic = () => {
         showToast,
         setIsEditInputOpen,
         setEditInputValue,
-        useApiKey1
+        useApiKey1,
+        historyIndex
     });
 
     // --- Export Hook ---
