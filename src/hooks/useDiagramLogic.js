@@ -150,7 +150,7 @@ export const useDiagramLogic = () => {
     const toggleDarkMode = () => setIsDarkMode(prev => !prev);
     const canIncreaseScale = () => scale < 5;
     const canDecreaseScale = () => scale > 0.5;
-    const selectApiKey = (key) => setUseApiKey1(key === 'key1');
+    const selectApiKey = (isKey1) => setUseApiKey1(isKey1);
 
     const undo = async () => {
         if (historyIndex > 0) {
