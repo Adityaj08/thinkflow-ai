@@ -85,8 +85,8 @@ export const DiagramSection = ({
                         : 'bg-white/80 backdrop-blur-lg border border-gray-200'
                     }`}
                 style={{
-                    minHeight: isFullscreen ? '100vh' : '300px',
-                    height: isFullscreen ? '100vh' : 'auto'
+                    minHeight: isFullscreen ? '100vh' : '500px',
+                    height: isFullscreen ? '100vh' : '500px'
                 }}
             >
                 <div
