@@ -34,7 +34,9 @@ export const DiagramSection = ({
     setIsEditInputOpen,
     editInputValue,
     setEditInputValue,
-    updateDiagram
+    updateDiagram,
+    selectedModel,
+    setSelectedModel
 }) => {
     return (
         <div className="relative mb-4" ref={fullscreenRef}>
@@ -154,6 +156,8 @@ export const DiagramSection = ({
                 setValue={setEditInputValue}
                 isLoading={isLoading}
                 isDarkMode={isDarkMode}
+                selectedModel={selectedModel}
+                setSelectedModel={setSelectedModel}
             />
         </div>
     );
