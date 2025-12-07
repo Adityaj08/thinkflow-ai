@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import SlideUp from './animations/SlideUp';
+import { ModelSelector } from './ModelSelector';
 
 export const EditInputBox = ({
     isOpen,
@@ -8,7 +9,9 @@ export const EditInputBox = ({
     value,
     setValue,
     isLoading,
-    isDarkMode
+    isDarkMode,
+    selectedModel,
+    setSelectedModel
 }) => {
     const inputRef = useRef(null);
 
@@ -38,18 +41,36 @@ export const EditInputBox = ({
             <div className="relative z-50 w-full max-w-2xl px-4">
                 <SlideUp distance={5} direction="vertical" delay={0} config={{ tension: 400, friction: 20 }}>
                     <div className={`
-            w-full rounded-xl shadow-2xl overflow-hidden
-            ${isDarkMode ? 'bg-black opacity-90 backdrop-blur-sm border border-white/50' : 'bg-white opacity-90 backdrop-blur-sm border border-gray-200'}
-          `}>
-                        <div className="p-4">
-                            <textarea
-                                ref={inputRef}
-                                value={value}
-                                onChange={(e) => setValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Describe Edits"
-                                className={'w-full h-24 p-4 text-lg resize-none outline-none rounded-lg '}
-                                disabled={isLoading}
+                        relative w-full rounded-xl shadow-2xl p-4
+                        ${isDarkMode ? 'bg-black/80 backdrop-blur-xl border border-white/20' : 'bg-white/90 backdrop-blur-xl border border-gray-200'}
+                    `}
+                        style={{
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)'
+                        }}>
+                        {/* Textarea */}
+                        <textarea
+                            ref={inputRef}
+                            value={value}
+                            onChange={(e) => setValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Describe Edits"
+                            className={`w-full h-24 p-3 pb-10 text-lg resize-none outline-none bg-transparent rounded-lg ${isDarkMode
+                                ? 'text-white placeholder-white/50'
+                                : 'text-gray-900 placeholder-gray-400'
+                                }`}
+                            disabled={isLoading}
+                        />
+
+                        {/* Model Selector & Send - Bottom Right */}
+                        <div className="absolute bottom-4 right-4">
+                            <ModelSelector
+                                selectedModel={selectedModel}
+                                setSelectedModel={setSelectedModel}
+                                onSubmit={() => onSubmit(value)}
+                                isLoading={isLoading}
+                                isDarkMode={isDarkMode}
+                                disabled={!value.trim()}
                             />
                         </div>
                     </div>

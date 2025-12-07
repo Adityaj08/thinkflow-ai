@@ -13,7 +13,8 @@ export const useDiagramGen = ({
     setIsEditInputOpen,
     setEditInputValue,
     useApiKey1,
-    historyIndex
+    historyIndex,
+    selectedModel
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -29,7 +30,7 @@ export const useDiagramGen = ({
             const ai = new GoogleGenAI({ apiKey });
 
             const response = await ai.models.generateContent({
-                model: "gemini-2.5-flash",
+                model: selectedModel,
                 contents: `Generate only Mermaid.js code without any explanation or markdown formatting for this diagram: ${prompt}. 
                        Do not include \`\`\`mermaid or any other markdown. Only output the actual mermaid code.
                        The diagram should use ${orientation} orientation.`,
@@ -70,7 +71,7 @@ export const useDiagramGen = ({
             const ai = new GoogleGenAI({ apiKey });
 
             const response = await ai.models.generateContent({
-                model: "gemini-2.5-flash",
+                model: selectedModel,
                 contents: `Update this Mermaid.js diagram based on the following request: "${updatePrompt}".
                                 
                                 Current Diagram Code:
@@ -122,7 +123,7 @@ export const useDiagramGen = ({
             const ai = new GoogleGenAI({ apiKey });
 
             const response = await ai.models.generateContent({
-                model: "gemini-2.5-flash",
+                model: selectedModel,
                 contents: `Analyze this Mermaid diagram: ${code}
                        Format the response starting directly with:
 
