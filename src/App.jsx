@@ -69,7 +69,9 @@ export default function App() {
     redo,
     historyIndex,
     history,
-    clearStorage
+    clearStorage,
+    selectedModel,
+    setSelectedModel
   } = useDiagramLogic();
 
   return (
@@ -103,6 +105,8 @@ export default function App() {
           isLoading={isLoading}
           isDarkMode={isDarkMode}
           generateDiagram={generateDiagram}
+          selectedModel={selectedModel}
+          setSelectedModel={setSelectedModel}
         />
 
         <DiagramSection
@@ -138,6 +142,8 @@ export default function App() {
           editInputValue={editInputValue}
           setEditInputValue={setEditInputValue}
           updateDiagram={updateDiagram}
+          selectedModel={selectedModel}
+          setSelectedModel={setSelectedModel}
         />
 
         <ExplanationSection
@@ -171,8 +177,6 @@ export default function App() {
           duration={copyToast.duration}
         />
       )}
-
-
     </div>
   );
 }
