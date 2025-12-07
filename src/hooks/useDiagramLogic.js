@@ -30,6 +30,7 @@ export const useDiagramLogic = () => {
     const [editInputValue, setEditInputValue] = useState("");
     const [history, setHistory] = useState([localStorage.getItem("diagram") || `graph TD\nA[Start] --> B{Decision}`]);
     const [historyIndex, setHistoryIndex] = useState(0);
+    const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash-lite");
 
     const isProcessingRef = useRef(false);
 
@@ -97,7 +98,8 @@ export const useDiagramLogic = () => {
         setIsEditInputOpen,
         setEditInputValue,
         useApiKey1,
-        historyIndex
+        historyIndex,
+        selectedModel
     });
 
     // --- Export Hook ---
@@ -272,6 +274,8 @@ export const useDiagramLogic = () => {
         redo,
         historyIndex,
         history,
-        clearStorage
+        clearStorage,
+        selectedModel,
+        setSelectedModel
     };
 };
