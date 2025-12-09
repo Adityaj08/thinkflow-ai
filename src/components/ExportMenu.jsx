@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { toast } from 'sonner';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import Watermark from './Watermark';
 
@@ -15,7 +16,7 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
 
   const handleShare = async (format) => {
     try {
-      showToast('Uploading diagram to cloud...', 'loading');
+      setIsSharing(true);
 
       // Get the mermaid container and SVG
       const mermaidContainer = diagramRef.current.querySelector('.mermaid');
@@ -134,78 +135,34 @@ export const ExportMenu = ({ isDarkMode, downloadDiagram, setIsExportOpen, showT
         });
       }
 
-      const result = await uploadToCloudinary(blob, format);
+      const uploadPromise = uploadToCloudinary(blob, format);
 
-      if (result.url) {
-        // Check if Web Share API is available (mobile devices)
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: 'ThinkFlow Diagram',
-              text: 'Check out this diagram I created with ThinkFlow',
-              url: result.url
-            });
-          } catch (err) {
-            // If user cancels share or share fails, show the permanent toast
-            showToast(
-              <div className="flex flex-col gap-2">
-                <div className="text-sm">Diagram uploaded successfully!</div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={result.url}
-                    readOnly
-                    className="flex-1 px-2 py-1 text-xs bg-white/10 rounded border border-white/20"
-                    onClick={(e) => e.target.select()}
-                  />
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(result.url);
-                      showToast('Link copied to clipboard!', 'success', 3000);
-                    }}
-                    className="px-2 py-1 text-xs bg-white/20 hover:bg-white/30 rounded transition-colors"
-                  >
-                    Copy
-                  </button>
-                </div>
-              </div>,
-              'success',
-              0
-            );
+      toast.promise(uploadPromise, {
+        loading: 'Uploading diagram to cloud...',
+        success: (result) => {
+          if (result.url) {
+            // Check if Web Share API is available (mobile devices)
+            if (navigator.share) {
+              navigator.share({
+                title: 'ThinkFlow Diagram',
+                text: 'Check out this diagram I created with ThinkFlow',
+                url: result.url
+              }).catch(() => {
+                // If user cancels share, copy to clipboard
+                navigator.clipboard.writeText(result.url);
+              });
+            } else {
+              // For desktop, copy to clipboard
+              navigator.clipboard.writeText(result.url);
+            }
+            return 'Diagram uploaded! Link copied to clipboard.';
           }
-        } else {
-          // For desktop, show the permanent toast with copy button
-          showToast(
-            <div className="flex flex-col gap-2">
-              <div className="text-sm">Diagram uploaded successfully!</div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={result.url}
-                  readOnly
-                  className="flex-1 px-2 py-1 text-xs bg-white/10 rounded border border-white/20"
-                  onClick={(e) => e.target.select()}
-                />
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(result.url);
-                    showToast('Link copied to clipboard!', 'success', 3000);
-                  }}
-                  className="px-2 py-1 text-xs bg-white/20 hover:bg-white/30 rounded transition-colors"
-                >
-                  Copy
-                </button>
-              </div>
-            </div>,
-            'success',
-            0
-          );
-        }
-      } else {
-        showToast('Failed to upload diagram', 'error');
-      }
+          throw new Error('Failed to get URL');
+        },
+        error: 'Failed to upload diagram',
+      });
     } catch (err) {
-      showToast(err.message || 'Failed to share diagram', 'error');
+      toast.error(err.message || 'Failed to share diagram');
     } finally {
       setIsSharing(false);
     }
