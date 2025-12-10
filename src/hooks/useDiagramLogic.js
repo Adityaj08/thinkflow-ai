@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { toast } from 'sonner';
 import { useDiagramGen } from './useDiagramGen';
 import { useDiagramInteraction } from './useDiagramInteraction';
 import { useDiagramExport } from './useDiagramExport';
@@ -24,8 +25,6 @@ export const useDiagramLogic = () => {
     const [showApiKeyMenu, setShowApiKeyMenu] = useState(false);
     const [logoDataUrl, setLogoDataUrl] = useState('');
     const [isExportOpen, setIsExportOpen] = useState(false);
-    const [toast, setToast] = useState(null);
-    const [copyToast, setCopyToast] = useState(null);
     const [isEditInputOpen, setIsEditInputOpen] = useState(false);
     const [editInputValue, setEditInputValue] = useState("");
     const [history, setHistory] = useState([localStorage.getItem("diagram") || `graph TD\nA[Start] --> B{Decision}`]);
@@ -39,12 +38,23 @@ export const useDiagramLogic = () => {
     const isPro = user && user['https://thinkflow.ai/roles']?.includes('pro');
 
     const showToast = (message, type = 'success', duration = 3000) => {
-        setToast({ message, type, duration });
-        setTimeout(() => setToast(null), duration);
-    };
+        const options = {
+            duration: duration === 0 ? Infinity : duration,
+        };
 
-    const handleToastClose = () => {
-        setToast(null);
+        switch (type) {
+            case 'success':
+                toast.success(message, options);
+                break;
+            case 'error':
+                toast.error(message, options);
+                break;
+            case 'loading':
+                toast.loading(message, options);
+                break;
+            default:
+                toast(message, options);
+        }
     };
 
     // --- Interaction Hook ---
@@ -103,7 +113,7 @@ export const useDiagramLogic = () => {
     });
 
     // --- Export Hook ---
-    const { downloadDiagram } = useDiagramExport({
+    const { downloadDiagram, copyToClipboard } = useDiagramExport({
         diagramRef,
         isAdmin,
         isPro
@@ -247,14 +257,13 @@ export const useDiagramLogic = () => {
         showApiKeyMenu, setShowApiKeyMenu,
         logoDataUrl, setLogoDataUrl,
         isExportOpen, setIsExportOpen,
-        toast, setToast,
-        copyToast, setCopyToast,
         toggleSlideshowMode,
         renderDiagram,
         saveDiagram,
         generateDiagram,
         analyzeDiagram,
         downloadDiagram,
+        copyToClipboard,
         toggleFullscreen,
         toggleDarkMode,
         handleOrientationChange,
@@ -263,7 +272,6 @@ export const useDiagramLogic = () => {
         canDecreaseScale,
         selectApiKey,
         showToast,
-        handleToastClose,
         isEditInputOpen,
         setIsEditInputOpen,
         editInputValue,

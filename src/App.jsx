@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import { useDiagramLogic } from "./hooks/useDiagramLogic";
 import { Header } from "./components/Header";
 import { PromptSection } from "./components/PromptSection";
@@ -6,7 +7,6 @@ import { CodeEditor } from "./components/CodeEditor";
 import { ExplanationSection } from "./components/ExplanationSection";
 import { HelpMenu } from "./components/HelpMenu";
 import ScrollToTop from "./components/ScrollToTop";
-import { Toast } from "./components/Toast";
 
 import { themes } from "./constants/themes";
 
@@ -42,14 +42,13 @@ export default function App() {
     showApiKeyMenu, setShowApiKeyMenu,
     logoDataUrl, setLogoDataUrl,
     isExportOpen, setIsExportOpen,
-    toast, setToast,
-    copyToast, setCopyToast,
     toggleSlideshowMode,
     renderDiagram,
     saveDiagram,
     generateDiagram,
     analyzeDiagram,
     downloadDiagram,
+    copyToClipboard,
     toggleFullscreen,
     toggleDarkMode,
     handleOrientationChange,
@@ -58,7 +57,6 @@ export default function App() {
     canDecreaseScale,
     selectApiKey,
     showToast,
-    handleToastClose,
     isEditInputOpen,
     setIsEditInputOpen,
     editInputValue,
@@ -76,6 +74,28 @@ export default function App() {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
+      <Toaster
+        position="bottom-right"
+        theme={isDarkMode ? "dark" : "light"}
+        richColors
+        toastOptions={{
+          style: {
+            background: isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(12px)',
+            border: isDarkMode ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
+            borderRadius: '12px',
+            boxShadow: isDarkMode
+              ? '0 8px 32px rgba(0, 0, 0, 0.4)'
+              : '0 8px 32px rgba(0, 0, 0, 0.1)',
+            fontFamily: "'Montserrat', sans-serif",
+          },
+          classNames: {
+            toast: 'glassmorphism-toast',
+            title: 'font-medium',
+            description: 'text-sm opacity-80',
+          },
+        }}
+      />
       <ScrollToTop />
       <div className="max-w-5xl mx-auto p-2 sm:p-4">
         <Header
@@ -144,6 +164,8 @@ export default function App() {
           updateDiagram={updateDiagram}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
+          copyToClipboard={copyToClipboard}
+          showToast={showToast}
         />
 
         <ExplanationSection
@@ -161,22 +183,6 @@ export default function App() {
       </div>
 
       <HelpMenu isDarkMode={isDarkMode} />
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          duration={toast.duration}
-          onClose={handleToastClose}
-        />
-      )}
-      {copyToast && (
-        <Toast
-          message={copyToast.message}
-          type={copyToast.type}
-          duration={copyToast.duration}
-        />
-      )}
     </div>
   );
 }
