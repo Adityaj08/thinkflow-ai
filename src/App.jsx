@@ -48,6 +48,7 @@ export default function App() {
     generateDiagram,
     analyzeDiagram,
     downloadDiagram,
+    copyToClipboard,
     toggleFullscreen,
     toggleDarkMode,
     handleOrientationChange,
@@ -163,6 +164,8 @@ export default function App() {
           updateDiagram={updateDiagram}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
+          copyToClipboard={copyToClipboard}
+          showToast={showToast}
         />
 
         <ExplanationSection

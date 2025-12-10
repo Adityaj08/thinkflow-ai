@@ -155,5 +155,21 @@ export const useDiagramExport = ({ diagramRef, isAdmin, isPro }) => {
         }
     };
 
-    return { downloadDiagram };
+    const copyToClipboard = async () => {
+        try {
+            const blob = await downloadDiagram('png', '1080p', 'transparent', true);
+            if (blob) {
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error copying to clipboard:', error);
+            throw error;
+        }
+    };
+
+    return { downloadDiagram, copyToClipboard };
 };

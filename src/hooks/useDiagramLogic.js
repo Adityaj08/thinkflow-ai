@@ -113,7 +113,7 @@ export const useDiagramLogic = () => {
     });
 
     // --- Export Hook ---
-    const { downloadDiagram } = useDiagramExport({
+    const { downloadDiagram, copyToClipboard } = useDiagramExport({
         diagramRef,
         isAdmin,
         isPro
@@ -263,6 +263,7 @@ export const useDiagramLogic = () => {
         generateDiagram,
         analyzeDiagram,
         downloadDiagram,
+        copyToClipboard,
         toggleFullscreen,
         toggleDarkMode,
         handleOrientationChange,
