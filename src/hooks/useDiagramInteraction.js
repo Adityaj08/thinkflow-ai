@@ -23,12 +23,13 @@ export const useDiagramInteraction = ({
     // Function to split diagram into parts
     const splitDiagramIntoParts = (diagramCode) => {
         try {
-            const parts = [];
             const lines = diagramCode.split('\n');
-            let currentPart = [];
-            let inSubgraph = false;
-            let subgraphContent = [];
             let graphDeclaration = '';
+            const nodeDefinitions = [];
+            const connections = [];
+            const subgraphs = [];
+            let inSubgraph = false;
+            let currentSubgraph = [];
 
             // Extract the graph declaration
             for (const line of lines) {
@@ -43,34 +44,56 @@ export const useDiagramInteraction = ({
                 graphDeclaration = `graph ${orientation}`;
             }
 
+            // Parse lines into node definitions, connections, and subgraphs
             for (const line of lines) {
-                if (line.trim().startsWith('subgraph')) {
-                    if (currentPart.length > 0) {
-                        parts.push(`${graphDeclaration}\n${currentPart.join('\n')}`);
-                        currentPart = [];
-                    }
+                const trimmedLine = line.trim();
+
+                if (!trimmedLine || trimmedLine.startsWith('graph')) {
+                    continue;
+                }
+
+                // Handle subgraphs
+                if (trimmedLine.startsWith('subgraph')) {
                     inSubgraph = true;
-                    subgraphContent = [line];
-                } else if (inSubgraph && line.trim() === 'end') {
-                    subgraphContent.push(line);
-                    parts.push(`${graphDeclaration}\n${subgraphContent.join('\n')}`);
-                    inSubgraph = false;
-                } else if (inSubgraph) {
-                    subgraphContent.push(line);
-                } else if (line.trim() && !line.trim().startsWith('graph')) {
-                    currentPart.push(line);
-                    if (line.includes('-->') || line.includes('---')) {
-                        parts.push(`${graphDeclaration}\n${currentPart.join('\n')}`);
-                        currentPart = [];
+                    currentSubgraph = [line];
+                    continue;
+                }
+
+                if (inSubgraph) {
+                    currentSubgraph.push(line);
+                    if (trimmedLine === 'end') {
+                        subgraphs.push(currentSubgraph.join('\n'));
+                        inSubgraph = false;
                     }
+                    continue;
+                }
+
+                // Check if line is a connection (contains --> or ---)
+                if (trimmedLine.includes('-->') || trimmedLine.includes('---')) {
+                    connections.push(line);
+                } else {
+                    // It's a node definition (like A[Label] or B{Decision})
+                    nodeDefinitions.push(line);
                 }
             }
 
-            if (currentPart.length > 0) {
-                parts.push(`${graphDeclaration}\n${currentPart.join('\n')}`);
+            // Build progressive parts - each part includes all previous content
+            const parts = [];
+            let cumulativeConnections = [];
+
+            // If there are subgraphs, add each as a part
+            for (const subgraph of subgraphs) {
+                parts.push(`${graphDeclaration}\n${nodeDefinitions.join('\n')}\n${subgraph}`);
             }
 
-            // If no parts were found, return the full diagram
+            // Add connections progressively
+            for (const connection of connections) {
+                cumulativeConnections.push(connection);
+                const part = `${graphDeclaration}\n${nodeDefinitions.join('\n')}\n${cumulativeConnections.join('\n')}`;
+                parts.push(part);
+            }
+
+            // If no parts were created, return the original diagram
             if (parts.length === 0) {
                 parts.push(diagramCode);
             }
@@ -286,6 +309,13 @@ export const useDiagramInteraction = ({
 
         renderDiagramWithDragging();
     }, [code, currentTheme, orientation]);
+
+    // Re-render diagram when slideshow mode, slide, or parts change
+    useEffect(() => {
+        if (diagramRef.current) {
+            renderDiagram();
+        }
+    }, [isSlideshowMode, currentSlide, diagramParts]);
 
     // Listen for fullscreen change events
     useEffect(() => {
