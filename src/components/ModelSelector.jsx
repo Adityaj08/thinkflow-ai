@@ -30,7 +30,7 @@ export const ModelSelector = ({
     const currentModelLabel = MODEL_OPTIONS.find(m => m.value === selectedModel)?.label || 'gemini-2.5-flash-lite';
 
     return (
-        <div ref={dropdownRef} className="flex items-center gap-2">
+        <div ref={dropdownRef} className="relative flex items-center gap-2">
             {/* Model Selector Button */}
             <button
                 type="button"
