@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
+import { MERMAID_SYNTAX } from '../context/syntaxRef';
 
 export const useDiagramGen = ({
     code,
@@ -14,7 +15,8 @@ export const useDiagramGen = ({
     setEditInputValue,
     useApiKey1,
     historyIndex,
-    selectedModel
+    selectedModel,
+    selectedDiagramType
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -31,9 +33,22 @@ export const useDiagramGen = ({
 
             const response = await ai.models.generateContent({
                 model: selectedModel,
-                contents: `Generate only Mermaid.js code without any explanation or markdown formatting for this diagram: ${prompt}. 
-                       Do not include \`\`\`mermaid or any other markdown. Only output the actual mermaid code.
-                       The diagram should use ${orientation} orientation.`,
+                contents: `You are a Mermaid.js diagram expert. Your task is to generate VALID Mermaid.js code.
+
+USER REQUEST: "${prompt}"
+DIAGRAM TYPE: ${selectedDiagramType}
+
+CRITICAL RULES:
+1. You MUST generate a ${selectedDiagramType} diagram
+2. You MUST follow the EXACT syntax pattern for ${selectedDiagramType} from the examples below
+3. Output ONLY raw Mermaid code - NO markdown, NO \`\`\`mermaid, NO explanations
+4. For flowcharts/graphs, use "${orientation}" orientation (e.g., graph ${orientation})
+5. Copy the structure and format EXACTLY from the matching example
+
+SYNTAX EXAMPLES (follow these patterns EXACTLY):
+${MERMAID_SYNTAX}
+
+Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the Mermaid code, nothing else.`,
             });
             const generated = response.text || "graph TD\nA --> B";
 
@@ -72,14 +87,24 @@ export const useDiagramGen = ({
 
             const response = await ai.models.generateContent({
                 model: selectedModel,
-                contents: `Update this Mermaid.js diagram based on the following request: "${updatePrompt}".
-                                
-                                Current Diagram Code:
-                                ${code}
+                contents: `You are a Mermaid.js diagram expert. Your task is to UPDATE an existing diagram.
 
-                                Return ONLY the updated Mermaid.js code without any explanation or markdown formatting.
-                                Do not include \`\`\`mermaid or any other markdown. Only output the actual mermaid code.
-                                The diagram should use ${orientation} orientation.`,
+USER REQUEST: "${updatePrompt}"
+
+CURRENT DIAGRAM TO MODIFY:
+${code}
+
+CRITICAL RULES:
+1. You MUST follow the EXACT syntax patterns shown in the examples below
+2. Output ONLY raw Mermaid code - NO markdown, NO \`\`\`mermaid, NO explanations
+3. Preserve the diagram type unless explicitly asked to change it
+4. For flowcharts/graphs, use "${orientation}" orientation
+5. Copy the structure and format EXACTLY from the matching example
+
+SYNTAX EXAMPLES (follow these patterns EXACTLY):
+${MERMAID_SYNTAX}
+
+Generate the updated diagram code now. Remember: output ONLY the Mermaid code, nothing else.`,
             });
             const generated = response.text || code;
 
