@@ -69,7 +69,9 @@ export default function App() {
     history,
     clearStorage,
     selectedModel,
-    setSelectedModel
+    setSelectedModel,
+    selectedDiagramType,
+    setSelectedDiagramType
   } = useDiagramLogic();
 
   return (
@@ -127,6 +129,8 @@ export default function App() {
           generateDiagram={generateDiagram}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
+          selectedDiagramType={selectedDiagramType}
+          setSelectedDiagramType={setSelectedDiagramType}
         />
 
         <DiagramSection
