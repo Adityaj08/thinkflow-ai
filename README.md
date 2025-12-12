@@ -150,6 +150,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Integrated into both prompt input and edit input boxes
 - Dynamic model selection passed to API calls
 
+### Bug Fixes & Architecture (Dec 2024)
+- Fixed header menu outside click behavior
+- Fixed API key toggle selection issue
+- Restored undo/redo functionality and fixed redundant rendering
+- Refactored diagram logic into separate hooks for better maintainability
+- Added keyboard shortcuts hook for improved navigation
+
 ## Acknowledgments
 
 - **Mermaid.js** for the amazing diagramming library.
