@@ -139,6 +139,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Added copy diagram to clipboard button with watermark support
 - Fixed slideshow mode to properly re-render and show node labels
 
+### Toast & Notifications (Dec 2024)
+- Integrated Sonner for toast notifications with glassmorphism styling
+- Added promise-based toasts for async operations
+- Improved error and success feedback throughout the app
+
 ## Acknowledgments
 
 - **Mermaid.js** for the amazing diagramming library.
