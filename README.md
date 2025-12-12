@@ -144,6 +144,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Added promise-based toasts for async operations
 - Improved error and success feedback throughout the app
 
+### Model Selector (Dec 2024)
+- Added reusable ModelSelector component for AI model selection
+- Support for multiple Gemini models (flash, flash-lite, pro)
+- Integrated into both prompt input and edit input boxes
+- Dynamic model selection passed to API calls
+
 ## Acknowledgments
 
 - **Mermaid.js** for the amazing diagramming library.
