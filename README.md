@@ -133,6 +133,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Enhanced AI prompts with strict syntax pattern enforcement
 - Added "New" and "Experimental" tags for diagram types
 
+### UI Improvements (Dec 2024)
+- Added theme-aware custom scrollbars for dark/light modes
+- Redesigned prompt input with auto-expanding textarea (1-7 rows)
+- Added copy diagram to clipboard button with watermark support
+- Fixed slideshow mode to properly re-render and show node labels
+
 ## Acknowledgments
 
 - **Mermaid.js** for the amazing diagramming library.
