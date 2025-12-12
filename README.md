@@ -125,6 +125,14 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Recent Changes
+
+### Diagram Type Selector & Enhanced AI (Dec 2024)
+- Added diagram type selector dropdown with all 23 diagram types
+- Integrated syntax reference for improved AI diagram generation
+- Enhanced AI prompts with strict syntax pattern enforcement
+- Added "New" and "Experimental" tags for diagram types
+
 ## Acknowledgments
 
 - **Mermaid.js** for the amazing diagramming library.
