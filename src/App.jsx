@@ -38,8 +38,6 @@ export default function App() {
     isOptionsOpen, setIsOptionsOpen,
     orientation, setOrientation,
     scale, setScale,
-    useApiKey1, setUseApiKey1,
-    showApiKeyMenu, setShowApiKeyMenu,
     logoDataUrl, setLogoDataUrl,
     isExportOpen, setIsExportOpen,
     toggleSlideshowMode,
@@ -55,7 +53,6 @@ export default function App() {
     handleScaleChange,
     canIncreaseScale,
     canDecreaseScale,
-    selectApiKey,
     showToast,
     isEditInputOpen,
     setIsEditInputOpen,
@@ -103,10 +100,6 @@ export default function App() {
         <Header
           isDarkMode={isDarkMode}
           toggleDarkMode={toggleDarkMode}
-          showApiKeyMenu={showApiKeyMenu}
-          setShowApiKeyMenu={setShowApiKeyMenu}
-          useApiKey1={useApiKey1}
-          selectApiKey={selectApiKey}
           isSlideshowMode={isSlideshowMode}
           toggleSlideshowMode={toggleSlideshowMode}
           isExportOpen={isExportOpen}
