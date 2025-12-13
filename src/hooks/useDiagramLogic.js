@@ -21,8 +21,6 @@ export const useDiagramLogic = () => {
     const [isOptionsOpen, setIsOptionsOpen] = useState(false);
     const [orientation, setOrientation] = useState('TD');
     const [scale, setScale] = useState(1);
-    const [useApiKey1, setUseApiKey1] = useState(true);
-    const [showApiKeyMenu, setShowApiKeyMenu] = useState(false);
     const [logoDataUrl, setLogoDataUrl] = useState('');
     const [isExportOpen, setIsExportOpen] = useState(false);
     const [isEditInputOpen, setIsEditInputOpen] = useState(false);
@@ -30,6 +28,7 @@ export const useDiagramLogic = () => {
     const [history, setHistory] = useState([localStorage.getItem("diagram") || `graph TD\nA[Start] --> B{Decision}`]);
     const [historyIndex, setHistoryIndex] = useState(0);
     const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash-lite");
+    const [selectedDiagramType, setSelectedDiagramType] = useState("flowchart");
 
     const isProcessingRef = useRef(false);
 
@@ -107,9 +106,9 @@ export const useDiagramLogic = () => {
         showToast,
         setIsEditInputOpen,
         setEditInputValue,
-        useApiKey1,
         historyIndex,
-        selectedModel
+        selectedModel,
+        selectedDiagramType
     });
 
     // --- Export Hook ---
@@ -162,7 +161,6 @@ export const useDiagramLogic = () => {
     const toggleDarkMode = () => setIsDarkMode(prev => !prev);
     const canIncreaseScale = () => scale < 5;
     const canDecreaseScale = () => scale > 0.5;
-    const selectApiKey = (isKey1) => setUseApiKey1(isKey1);
 
     const undo = async () => {
         if (historyIndex > 0) {
@@ -253,8 +251,6 @@ export const useDiagramLogic = () => {
         isOptionsOpen, setIsOptionsOpen,
         orientation, setOrientation,
         scale, setScale,
-        useApiKey1, setUseApiKey1,
-        showApiKeyMenu, setShowApiKeyMenu,
         logoDataUrl, setLogoDataUrl,
         isExportOpen, setIsExportOpen,
         toggleSlideshowMode,
@@ -270,7 +266,6 @@ export const useDiagramLogic = () => {
         handleScaleChange,
         canIncreaseScale,
         canDecreaseScale,
-        selectApiKey,
         showToast,
         isEditInputOpen,
         setIsEditInputOpen,
@@ -284,6 +279,8 @@ export const useDiagramLogic = () => {
         history,
         clearStorage,
         selectedModel,
-        setSelectedModel
+        setSelectedModel,
+        selectedDiagramType,
+        setSelectedDiagramType
     };
 };

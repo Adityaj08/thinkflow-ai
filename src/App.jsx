@@ -38,8 +38,6 @@ export default function App() {
     isOptionsOpen, setIsOptionsOpen,
     orientation, setOrientation,
     scale, setScale,
-    useApiKey1, setUseApiKey1,
-    showApiKeyMenu, setShowApiKeyMenu,
     logoDataUrl, setLogoDataUrl,
     isExportOpen, setIsExportOpen,
     toggleSlideshowMode,
@@ -55,7 +53,6 @@ export default function App() {
     handleScaleChange,
     canIncreaseScale,
     canDecreaseScale,
-    selectApiKey,
     showToast,
     isEditInputOpen,
     setIsEditInputOpen,
@@ -69,7 +66,9 @@ export default function App() {
     history,
     clearStorage,
     selectedModel,
-    setSelectedModel
+    setSelectedModel,
+    selectedDiagramType,
+    setSelectedDiagramType
   } = useDiagramLogic();
 
   return (
@@ -101,10 +100,6 @@ export default function App() {
         <Header
           isDarkMode={isDarkMode}
           toggleDarkMode={toggleDarkMode}
-          showApiKeyMenu={showApiKeyMenu}
-          setShowApiKeyMenu={setShowApiKeyMenu}
-          useApiKey1={useApiKey1}
-          selectApiKey={selectApiKey}
           isSlideshowMode={isSlideshowMode}
           toggleSlideshowMode={toggleSlideshowMode}
           isExportOpen={isExportOpen}
@@ -127,6 +122,8 @@ export default function App() {
           generateDiagram={generateDiagram}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
+          selectedDiagramType={selectedDiagramType}
+          setSelectedDiagramType={setSelectedDiagramType}
         />
 
         <DiagramSection

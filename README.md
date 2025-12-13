@@ -74,8 +74,8 @@ ThinkFlow AI supports a wide range of diagram types to suit various needs:
 
 3. Create a `.env` file in the root directory and add your API keys:
    ```env
-   VITE_GEMINI_API_KEY1=your_api_key_1
-   VITE_GEMINI_API_KEY2=your_api_key_2
+   VITE_GEMINI_API_KEY1=your_api_key
+   VITE_OPENROUTER_API_KEY=your_api_key
    VITE_AUTH0_DOMAIN=your_auth0_domain
    VITE_AUTH0_CLIENT_ID=your_auth0_client_id
    ```
@@ -124,6 +124,38 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Recent Changes
+
+### Diagram Type Selector & Enhanced AI (Dec 2024)
+- Added diagram type selector dropdown with all 23 diagram types
+- Integrated syntax reference for improved AI diagram generation
+- Enhanced AI prompts with strict syntax pattern enforcement
+- Added "New" and "Experimental" tags for diagram types
+
+### UI Improvements (Dec 2024)
+- Added theme-aware custom scrollbars for dark/light modes
+- Redesigned prompt input with auto-expanding textarea (1-7 rows)
+- Added copy diagram to clipboard button with watermark support
+- Fixed slideshow mode to properly re-render and show node labels
+
+### Toast & Notifications (Dec 2024)
+- Integrated Sonner for toast notifications with glassmorphism styling
+- Added promise-based toasts for async operations
+- Improved error and success feedback throughout the app
+
+### Model Selector (Dec 2024)
+- Added reusable ModelSelector component for AI model selection
+- Support for multiple Gemini models (flash, flash-lite, pro)
+- Integrated into both prompt input and edit input boxes
+- Dynamic model selection passed to API calls
+
+### Bug Fixes & Architecture (Dec 2024)
+- Fixed header menu outside click behavior
+- Fixed API key toggle selection issue
+- Restored undo/redo functionality and fixed redundant rendering
+- Refactored diagram logic into separate hooks for better maintainability
+- Added keyboard shortcuts hook for improved navigation
 
 ## Acknowledgments
 

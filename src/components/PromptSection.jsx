@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { ModelSelector } from './ModelSelector';
+import { DiagramTypeSelector } from './DiagramTypeSelector';
 
 export const PromptSection = ({
     prompt,
@@ -8,7 +9,9 @@ export const PromptSection = ({
     isDarkMode,
     generateDiagram,
     selectedModel,
-    setSelectedModel
+    setSelectedModel,
+    selectedDiagramType,
+    setSelectedDiagramType
 }) => {
     const textareaRef = useRef(null);
 
@@ -55,10 +58,17 @@ export const PromptSection = ({
                     style={{ minHeight: '24px' }}
                 />
 
-                <div className={`flex items-center justify-end px-2 py-2 ${isDarkMode
+                {/* Lower Part - Diagram Type Selector & Model Selector */}
+                <div className={`flex items-center justify-end gap-2 px-2 py-2 ${isDarkMode
                     ? 'border-white/10'
                     : 'border-gray-200'
                     }`}>
+                    <DiagramTypeSelector
+                        selectedType={selectedDiagramType}
+                        setSelectedType={setSelectedDiagramType}
+                        isLoading={isLoading}
+                        isDarkMode={isDarkMode}
+                    />
                     <ModelSelector
                         selectedModel={selectedModel}
                         setSelectedModel={setSelectedModel}
@@ -72,3 +82,4 @@ export const PromptSection = ({
         </div>
     );
 };
+
