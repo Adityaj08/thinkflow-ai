@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
+import { OpenRouter } from "@openrouter/sdk";
 import { MERMAID_SYNTAX } from '../context/syntaxRef';
+
+// OpenRouter models
+const OPENROUTER_MODELS = [
+    'tngtech/deepseek-r1t2-chimera:free',
+    'z-ai/glm-4.5-air:free'
+];
+
+const isOpenRouterModel = (model) => OPENROUTER_MODELS.includes(model);
 
 export const useDiagramGen = ({
     code,
@@ -13,7 +22,6 @@ export const useDiagramGen = ({
     showToast,
     setIsEditInputOpen,
     setEditInputValue,
-    useApiKey1,
     historyIndex,
     selectedModel,
     selectedDiagramType
@@ -27,13 +35,8 @@ export const useDiagramGen = ({
         isProcessingRef.current = true;
         try {
             setIsLoading(true);
-            const apiKey = useApiKey1 ? import.meta.env.VITE_GEMINI_API_KEY1 : import.meta.env.VITE_GEMINI_API_KEY2;
 
-            const ai = new GoogleGenAI({ apiKey });
-
-            const response = await ai.models.generateContent({
-                model: selectedModel,
-                contents: `You are a Mermaid.js diagram expert. Your task is to generate VALID Mermaid.js code.
+            const promptContent = `You are a Mermaid.js diagram expert. Your task is to generate VALID Mermaid.js code.
 
 USER REQUEST: "${prompt}"
 DIAGRAM TYPE: ${selectedDiagramType}
@@ -48,8 +51,28 @@ CRITICAL RULES:
 SYNTAX EXAMPLES (follow these patterns EXACTLY):
 ${MERMAID_SYNTAX}
 
-Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the Mermaid code, nothing else.`,
-            });
+Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the Mermaid code, nothing else.`;
+
+            let response;
+
+            if (isOpenRouterModel(selectedModel)) {
+                const openrouter = new OpenRouter({
+                    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
+                });
+
+                const result = await openrouter.chat.completions.create({
+                    model: selectedModel,
+                    messages: [{ role: "user", content: promptContent }]
+                });
+                response = { text: result.choices[0]?.message?.content || "graph TD\nA --> B" };
+            } else {
+                const apiKey = import.meta.env.VITE_GEMINI_API_KEY1;
+                const ai = new GoogleGenAI({ apiKey });
+                response = await ai.models.generateContent({
+                    model: selectedModel,
+                    contents: promptContent,
+                });
+            }
             const generated = response.text || "graph TD\nA --> B";
 
             // Ensure the generated code has the correct orientation
@@ -81,13 +104,8 @@ Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the 
 
         try {
             setIsLoading(true);
-            const apiKey = useApiKey1 ? import.meta.env.VITE_GEMINI_API_KEY1 : import.meta.env.VITE_GEMINI_API_KEY2;
 
-            const ai = new GoogleGenAI({ apiKey });
-
-            const response = await ai.models.generateContent({
-                model: selectedModel,
-                contents: `You are a Mermaid.js diagram expert. Your task is to UPDATE an existing diagram.
+            const promptContent = `You are a Mermaid.js diagram expert. Your task is to UPDATE an existing diagram.
 
 USER REQUEST: "${updatePrompt}"
 
@@ -104,8 +122,28 @@ CRITICAL RULES:
 SYNTAX EXAMPLES (follow these patterns EXACTLY):
 ${MERMAID_SYNTAX}
 
-Generate the updated diagram code now. Remember: output ONLY the Mermaid code, nothing else.`,
-            });
+Generate the updated diagram code now. Remember: output ONLY the Mermaid code, nothing else.`;
+
+            let response;
+
+            if (isOpenRouterModel(selectedModel)) {
+                const openrouter = new OpenRouter({
+                    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
+                });
+
+                const result = await openrouter.chat.completions.create({
+                    model: selectedModel,
+                    messages: [{ role: "user", content: promptContent }]
+                });
+                response = { text: result.choices[0]?.message?.content || code };
+            } else {
+                const apiKey = import.meta.env.VITE_GEMINI_API_KEY1;
+                const ai = new GoogleGenAI({ apiKey });
+                response = await ai.models.generateContent({
+                    model: selectedModel,
+                    contents: promptContent,
+                });
+            }
             const generated = response.text || code;
 
             const cleanCode = generated.replace(/```(?:mermaid)?\n?|\n?```/g, '').trim();
@@ -143,27 +181,42 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
         isProcessingRef.current = true;
         try {
             setIsAnalyzing(true);
-            const apiKey = useApiKey1 ? import.meta.env.VITE_GEMINI_API_KEY1 : import.meta.env.VITE_GEMINI_API_KEY2;
 
-            const ai = new GoogleGenAI({ apiKey });
+            const promptContent = `Analyze this Mermaid diagram: ${code}
+                   Format the response starting directly with:
 
-            const response = await ai.models.generateContent({
-                model: selectedModel,
-                contents: `Analyze this Mermaid diagram: ${code}
-                       Format the response starting directly with:
+                   1. Overview:
+                   A brief summary of the diagram's purpose and what it represents.
 
-                       1. Overview:
-                       A brief summary of the diagram's purpose and what it represents.
+                   2. Key Components:
+                   List and describe the main elements and nodes in the diagram.
 
-                       2. Key Components:
-                       List and describe the main elements and nodes in the diagram.
+                   3. Flow Description:
+                   Explain the relationships and flow between components, detailing how the process unfolds.
 
-                       3. Flow Description:
-                       Explain the relationships and flow between components, detailing how the process unfolds.
+                   4. Purpose:
+                   Describe the main purpose and use case of this diagram, and how it can be applied in real-world scenarios.`;
 
-                       4. Purpose:
-                       Describe the main purpose and use case of this diagram, and how it can be applied in real-world scenarios.`,
-            });
+            let response;
+
+            if (isOpenRouterModel(selectedModel)) {
+                const openrouter = new OpenRouter({
+                    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
+                });
+
+                const result = await openrouter.chat.completions.create({
+                    model: selectedModel,
+                    messages: [{ role: "user", content: promptContent }]
+                });
+                response = { text: result.choices[0]?.message?.content || "" };
+            } else {
+                const apiKey = import.meta.env.VITE_GEMINI_API_KEY1;
+                const ai = new GoogleGenAI({ apiKey });
+                response = await ai.models.generateContent({
+                    model: selectedModel,
+                    contents: promptContent,
+                });
+            }
             setExplanation(response.text || "");
 
         } catch (error) {
