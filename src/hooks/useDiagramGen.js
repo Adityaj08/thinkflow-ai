@@ -60,7 +60,7 @@ Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the 
                     apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
                 });
 
-                const result = await openrouter.chat.completions.create({
+                const result = await openrouter.chat.send({
                     model: selectedModel,
                     messages: [{ role: "user", content: promptContent }]
                 });
@@ -131,7 +131,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
                     apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
                 });
 
-                const result = await openrouter.chat.completions.create({
+                const result = await openrouter.chat.send({
                     model: selectedModel,
                     messages: [{ role: "user", content: promptContent }]
                 });
@@ -204,7 +204,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
                     apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
                 });
 
-                const result = await openrouter.chat.completions.create({
+                const result = await openrouter.chat.send({
                     model: selectedModel,
                     messages: [{ role: "user", content: promptContent }]
                 });
