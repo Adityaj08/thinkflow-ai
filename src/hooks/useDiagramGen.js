@@ -66,7 +66,7 @@ Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the 
                 });
                 response = { text: result.choices[0]?.message?.content || "graph TD\nA --> B" };
             } else {
-                const apiKey = import.meta.env.VITE_GEMINI_API_KEY1;
+                const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
                 const ai = new GoogleGenAI({ apiKey });
                 response = await ai.models.generateContent({
                     model: selectedModel,
@@ -137,7 +137,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
                 });
                 response = { text: result.choices[0]?.message?.content || code };
             } else {
-                const apiKey = import.meta.env.VITE_GEMINI_API_KEY1;
+                const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
                 const ai = new GoogleGenAI({ apiKey });
                 response = await ai.models.generateContent({
                     model: selectedModel,
@@ -210,7 +210,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
                 });
                 response = { text: result.choices[0]?.message?.content || "" };
             } else {
-                const apiKey = import.meta.env.VITE_GEMINI_API_KEY1;
+                const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
                 const ai = new GoogleGenAI({ apiKey });
                 response = await ai.models.generateContent({
                     model: selectedModel,

@@ -74,8 +74,8 @@ ThinkFlow AI supports a wide range of diagram types to suit various needs:
 
 3. Create a `.env` file in the root directory and add your API keys:
    ```env
-   VITE_GEMINI_API_KEY1=your_api_key_1
-   VITE_GEMINI_API_KEY2=your_api_key_2
+   VITE_GEMINI_API_KEY1=your_api_key
+   VITE_OPENROUTER_API_KEY=your_api_key
    VITE_AUTH0_DOMAIN=your_auth0_domain
    VITE_AUTH0_CLIENT_ID=your_auth0_client_id
    ```
