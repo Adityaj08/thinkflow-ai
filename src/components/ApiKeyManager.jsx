@@ -11,17 +11,28 @@ export const ApiKeyManager = ({ isDarkMode }) => {
   const [savedKeys, setSavedKeys] = useState({ gemini: '', openrouter: '' });
   const [showGeminiKey, setShowGeminiKey] = useState(false);
   const [showOpenrouterKey, setShowOpenrouterKey] = useState(false);
+  const [useCustomKeys, setUseCustomKeys] = useState(false);
 
   // Load saved keys from localStorage on mount
   useEffect(() => {
     const storedKeys = localStorage.getItem('apiKeys');
+    const storedUseCustom = localStorage.getItem('useCustomApiKeys');
     if (storedKeys) {
       const parsed = JSON.parse(storedKeys);
       setSavedKeys(parsed);
       setGeminiKey(parsed.gemini || '');
       setOpenrouterKey(parsed.openrouter || '');
     }
+    if (storedUseCustom) {
+      setUseCustomKeys(JSON.parse(storedUseCustom));
+    }
   }, []);
+
+  const handleToggleCustomKeys = () => {
+    const newValue = !useCustomKeys;
+    setUseCustomKeys(newValue);
+    localStorage.setItem('useCustomApiKeys', JSON.stringify(newValue));
+  };
 
   const handleSaveKeys = () => {
     const newKeys = {
@@ -43,12 +54,34 @@ export const ApiKeyManager = ({ isDarkMode }) => {
     ${isDarkMode
       ? 'bg-black/30 text-white border border-white/10 hover:bg-black/40 placeholder-white/40'
       : 'bg-white/80 text-gray-900 border border-gray-200 hover:bg-white/90 placeholder-gray-400'
-    }`;
+    } ${!useCustomKeys ? 'opacity-50 cursor-not-allowed' : ''}`;
 
   const linkClass = `text-xs hover:underline transition-colors ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`;
 
   return (
     <div className="space-y-4">
+      {/* Toggle for custom keys */}
+      <div className="flex items-center justify-between">
+        <p className={`text-sm ${isDarkMode ? 'text-white/80' : 'text-gray-600'}`}>
+          Use custom API keys
+        </p>
+        <button
+          onClick={handleToggleCustomKeys}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200
+            ${useCustomKeys
+              ? 'bg-emerald-500'
+              : isDarkMode
+                ? 'bg-white/10'
+                : 'bg-gray-200'
+            }`}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200
+              ${useCustomKeys ? 'translate-x-6' : 'translate-x-1'}`}
+          />
+        </button>
+      </div>
+
       {/* Gemini API Key */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -70,6 +103,7 @@ export const ApiKeyManager = ({ isDarkMode }) => {
             value={geminiKey}
             onChange={(e) => setGeminiKey(e.target.value)}
             placeholder="Enter your Gemini API key"
+            disabled={!useCustomKeys}
             className={inputBaseClass}
           />
           <button
@@ -117,6 +151,7 @@ export const ApiKeyManager = ({ isDarkMode }) => {
             value={openrouterKey}
             onChange={(e) => setOpenrouterKey(e.target.value)}
             placeholder="Enter your OpenRouter API key"
+            disabled={!useCustomKeys}
             className={inputBaseClass}
           />
           <button
