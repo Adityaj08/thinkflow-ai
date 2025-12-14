@@ -11,6 +11,29 @@ const OPENROUTER_MODELS = [
 
 const isOpenRouterModel = (model) => OPENROUTER_MODELS.includes(model);
 
+// Get API key from localStorage or fallback to env vars
+const getApiKey = (provider) => {
+    try {
+        const storedKeys = localStorage.getItem('apiKeys');
+        if (storedKeys) {
+            const keys = JSON.parse(storedKeys);
+            if (keys[provider]) {
+                return keys[provider];
+            }
+        }
+    } catch (e) {
+        console.warn('Failed to read API keys from localStorage:', e);
+    }
+
+    // Fallback to environment variables
+    if (provider === 'gemini') {
+        return import.meta.env.VITE_GEMINI_API_KEY;
+    } else if (provider === 'openrouter') {
+        return import.meta.env.VITE_OPENROUTER_API_KEY;
+    }
+    return null;
+};
+
 export const useDiagramGen = ({
     code,
     setCode,
@@ -57,7 +80,7 @@ Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the 
 
             if (isOpenRouterModel(selectedModel)) {
                 const openrouter = new OpenRouter({
-                    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
+                    apiKey: getApiKey('openrouter')
                 });
 
                 const result = await openrouter.chat.send({
@@ -66,7 +89,7 @@ Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the 
                 });
                 response = { text: result.choices[0]?.message?.content || "graph TD\nA --> B" };
             } else {
-                const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+                const apiKey = getApiKey('gemini');
                 const ai = new GoogleGenAI({ apiKey });
                 response = await ai.models.generateContent({
                     model: selectedModel,
@@ -128,7 +151,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
 
             if (isOpenRouterModel(selectedModel)) {
                 const openrouter = new OpenRouter({
-                    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
+                    apiKey: getApiKey('openrouter')
                 });
 
                 const result = await openrouter.chat.send({
@@ -137,7 +160,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
                 });
                 response = { text: result.choices[0]?.message?.content || code };
             } else {
-                const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+                const apiKey = getApiKey('gemini');
                 const ai = new GoogleGenAI({ apiKey });
                 response = await ai.models.generateContent({
                     model: selectedModel,
@@ -201,7 +224,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
 
             if (isOpenRouterModel(selectedModel)) {
                 const openrouter = new OpenRouter({
-                    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY
+                    apiKey: getApiKey('openrouter')
                 });
 
                 const result = await openrouter.chat.send({
@@ -210,7 +233,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
                 });
                 response = { text: result.choices[0]?.message?.content || "" };
             } else {
-                const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+                const apiKey = getApiKey('gemini');
                 const ai = new GoogleGenAI({ apiKey });
                 response = await ai.models.generateContent({
                     model: selectedModel,
