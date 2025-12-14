@@ -11,14 +11,17 @@ const OPENROUTER_MODELS = [
 
 const isOpenRouterModel = (model) => OPENROUTER_MODELS.includes(model);
 
-// Get API key from localStorage or fallback to env vars
+// Get API key from localStorage (if enabled) or fallback to env vars
 const getApiKey = (provider) => {
     try {
-        const storedKeys = localStorage.getItem('apiKeys');
-        if (storedKeys) {
-            const keys = JSON.parse(storedKeys);
-            if (keys[provider]) {
-                return keys[provider];
+        const useCustom = localStorage.getItem('useCustomApiKeys');
+        if (useCustom && JSON.parse(useCustom)) {
+            const storedKeys = localStorage.getItem('apiKeys');
+            if (storedKeys) {
+                const keys = JSON.parse(storedKeys);
+                if (keys[provider]) {
+                    return keys[provider];
+                }
             }
         }
     } catch (e) {
