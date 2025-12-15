@@ -127,6 +127,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Recent Changes
 
+### Syntax Highlighting (Dec 2024)
+- Added CodeMirror-based code editor with custom Mermaid syntax highlighting
+- Color-coded keywords, arrows, strings, comments, and node IDs
+- Line numbers and active line highlighting
+- Dark/light theme support matching app theme
+
 ### Diagram Type Selector & Enhanced AI (Dec 2024)
 - Added diagram type selector dropdown with all 23 diagram types
 - Integrated syntax reference for improved AI diagram generation
