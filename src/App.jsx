@@ -45,6 +45,7 @@ export default function App() {
     saveDiagram,
     generateDiagram,
     analyzeDiagram,
+    expandDiagram,
     downloadDiagram,
     copyToClipboard,
     toggleFullscreen,
@@ -138,6 +139,7 @@ export default function App() {
           currentSlide={currentSlide}
           code={code}
           analyzeDiagram={analyzeDiagram}
+          expandDiagram={expandDiagram}
           isAnalyzing={isAnalyzing}
           orientation={orientation}
           handleOrientationChange={handleOrientationChange}
