@@ -37,6 +37,28 @@ const getApiKey = (provider) => {
     return null;
 };
 
+// Unified AI call function - handles both OpenRouter and Gemini
+const callAI = async (model, promptContent, fallbackText = "") => {
+    if (isOpenRouterModel(model)) {
+        const openrouter = new OpenRouter({
+            apiKey: getApiKey('openrouter')
+        });
+        const result = await openrouter.chat.send({
+            model: model,
+            messages: [{ role: "user", content: promptContent }]
+        });
+        return result.choices[0]?.message?.content || fallbackText;
+    } else {
+        const apiKey = getApiKey('gemini');
+        const ai = new GoogleGenAI({ apiKey });
+        const response = await ai.models.generateContent({
+            model: model,
+            contents: promptContent,
+        });
+        return response.text || fallbackText;
+    }
+};
+
 export const useDiagramGen = ({
     code,
     setCode,
@@ -79,27 +101,7 @@ ${MERMAID_SYNTAX}
 
 Generate the ${selectedDiagramType} diagram code now. Remember: output ONLY the Mermaid code, nothing else.`;
 
-            let response;
-
-            if (isOpenRouterModel(selectedModel)) {
-                const openrouter = new OpenRouter({
-                    apiKey: getApiKey('openrouter')
-                });
-
-                const result = await openrouter.chat.send({
-                    model: selectedModel,
-                    messages: [{ role: "user", content: promptContent }]
-                });
-                response = { text: result.choices[0]?.message?.content || "graph TD\nA --> B" };
-            } else {
-                const apiKey = getApiKey('gemini');
-                const ai = new GoogleGenAI({ apiKey });
-                response = await ai.models.generateContent({
-                    model: selectedModel,
-                    contents: promptContent,
-                });
-            }
-            const generated = response.text || "graph TD\nA --> B";
+            const generated = await callAI(selectedModel, promptContent, "graph TD\nA --> B");
 
             // Ensure the generated code has the correct orientation
             const cleanCode = generated.replace(/```(?:mermaid)?\n?|\n?```/g, '').trim();
@@ -150,27 +152,7 @@ ${MERMAID_SYNTAX}
 
 Generate the updated diagram code now. Remember: output ONLY the Mermaid code, nothing else.`;
 
-            let response;
-
-            if (isOpenRouterModel(selectedModel)) {
-                const openrouter = new OpenRouter({
-                    apiKey: getApiKey('openrouter')
-                });
-
-                const result = await openrouter.chat.send({
-                    model: selectedModel,
-                    messages: [{ role: "user", content: promptContent }]
-                });
-                response = { text: result.choices[0]?.message?.content || code };
-            } else {
-                const apiKey = getApiKey('gemini');
-                const ai = new GoogleGenAI({ apiKey });
-                response = await ai.models.generateContent({
-                    model: selectedModel,
-                    contents: promptContent,
-                });
-            }
-            const generated = response.text || code;
+            const generated = await callAI(selectedModel, promptContent, code);
 
             const cleanCode = generated.replace(/```(?:mermaid)?\n?|\n?```/g, '').trim();
             const codeWithOrientation = cleanCode.replace(/graph (TD|LR|BT|RL)/, `graph ${orientation}`);
@@ -223,33 +205,62 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
                    4. Purpose:
                    Describe the main purpose and use case of this diagram, and how it can be applied in real-world scenarios.`;
 
-            let response;
-
-            if (isOpenRouterModel(selectedModel)) {
-                const openrouter = new OpenRouter({
-                    apiKey: getApiKey('openrouter')
-                });
-
-                const result = await openrouter.chat.send({
-                    model: selectedModel,
-                    messages: [{ role: "user", content: promptContent }]
-                });
-                response = { text: result.choices[0]?.message?.content || "" };
-            } else {
-                const apiKey = getApiKey('gemini');
-                const ai = new GoogleGenAI({ apiKey });
-                response = await ai.models.generateContent({
-                    model: selectedModel,
-                    contents: promptContent,
-                });
-            }
-            setExplanation(response.text || "");
+            const explanation = await callAI(selectedModel, promptContent, "");
+            setExplanation(explanation);
 
         } catch (error) {
             console.error('Error:', error);
             showToast?.("Failed to analyze diagram", "error");
         } finally {
             setIsAnalyzing(false);
+            isProcessingRef.current = false;
+        }
+    };
+
+    const expandDiagram = async (isProcessingRef) => {
+        if (isProcessingRef.current) return;
+        isProcessingRef.current = true;
+        try {
+            setIsLoading(true);
+
+            const promptContent = `You are a Mermaid.js diagram expert. Your task is to EXPAND and IMPROVE an existing diagram with more context and detail.
+
+CURRENT DIAGRAM:
+${code}
+
+CRITICAL RULES:
+1. You MUST follow the EXACT syntax patterns shown in the examples below
+2. Output ONLY raw Mermaid code - NO markdown, NO \`\`\`mermaid, NO explanations
+3. Keep the same diagram type
+4. For flowcharts/graphs, use "${orientation}" orientation
+5. ADD more nodes, connections, and details to make the diagram more comprehensive
+6. Add subgraphs, decision branches, error handling, or additional steps where appropriate
+7. Make the expanded diagram AT LEAST 50% larger than the original
+
+SYNTAX EXAMPLES (follow these patterns EXACTLY):
+${MERMAID_SYNTAX}
+
+Generate the EXPANDED diagram code now. Remember: output ONLY the Mermaid code, nothing else.`;
+
+            const generated = await callAI(selectedModel, promptContent, code);
+
+            const cleanCode = generated.replace(/```(?:mermaid)?\n?|\n?```/g, '').trim();
+            const codeWithOrientation = cleanCode.replace(/graph (TD|LR|BT|RL)/, `graph ${orientation}`);
+            setCode(codeWithOrientation);
+
+            // Update history
+            const newHistory = history.slice(0, historyIndex + 1);
+            newHistory.push(codeWithOrientation);
+            setHistory(newHistory);
+            setHistoryIndex(prev => prev + 1);
+
+            await resetView(codeWithOrientation);
+            showToast?.("Diagram expanded successfully!", "success");
+        } catch (error) {
+            console.error('Error expanding diagram:', error);
+            showToast?.("Failed to expand diagram", "error");
+        } finally {
+            setIsLoading(false);
             isProcessingRef.current = false;
         }
     };
@@ -263,6 +274,7 @@ Generate the updated diagram code now. Remember: output ONLY the Mermaid code, n
         setExplanation,
         generateDiagram,
         updateDiagram,
-        analyzeDiagram
+        analyzeDiagram,
+        expandDiagram
     };
 };
