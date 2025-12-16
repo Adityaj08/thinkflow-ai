@@ -94,7 +94,8 @@ export const useDiagramLogic = () => {
         setExplanation,
         generateDiagram: generateDiagramGen,
         updateDiagram: updateDiagramGen,
-        analyzeDiagram: analyzeDiagramGen
+        analyzeDiagram: analyzeDiagramGen,
+        expandDiagram: expandDiagramGen
     } = useDiagramGen({
         code,
         setCode,
@@ -123,6 +124,7 @@ export const useDiagramLogic = () => {
     const generateDiagram = () => generateDiagramGen(prompt, isProcessingRef);
     const updateDiagram = (updatePrompt) => updateDiagramGen(updatePrompt, isProcessingRef);
     const analyzeDiagram = () => analyzeDiagramGen(isProcessingRef);
+    const expandDiagram = () => expandDiagramGen(isProcessingRef);
 
     const toggleSlideshowMode = () => {
         const newMode = !isSlideshowMode;
@@ -258,6 +260,7 @@ export const useDiagramLogic = () => {
         saveDiagram,
         generateDiagram,
         analyzeDiagram,
+        expandDiagram,
         downloadDiagram,
         copyToClipboard,
         toggleFullscreen,
