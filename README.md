@@ -168,6 +168,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Restored undo/redo functionality and fixed redundant rendering
 - Refactored diagram logic into separate hooks for better maintainability
 - Added keyboard shortcuts hook for improved navigation
+- Unified AI calls with `callAI` helper function for cleaner code
 
 ## Acknowledgments
 
