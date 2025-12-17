@@ -127,6 +127,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Recent Changes
 
+### AI Expand Diagram (Dec 2024)
+- Added AI-powered expand button with sparkle icon (✨)
+- Expands diagrams with more nodes, connections, and context
+- Adds subgraphs, decision branches, and error handling
+- Works with both Gemini and OpenRouter models
+
 ### Syntax Highlighting (Dec 2024)
 - Added CodeMirror-based code editor with custom Mermaid syntax highlighting
 - Color-coded keywords, arrows, strings, comments, and node IDs
