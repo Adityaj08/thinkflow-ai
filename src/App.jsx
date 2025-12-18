@@ -178,6 +178,7 @@ export default function App() {
           setCode={setCode}
           isDarkMode={isDarkMode}
           saveDiagram={saveDiagram}
+          showToast={showToast}
         />
       </div>
 
