@@ -5,6 +5,7 @@ import { useDiagramGen } from './useDiagramGen';
 import { useDiagramInteraction } from './useDiagramInteraction';
 import { useDiagramExport } from './useDiagramExport';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts';
+import { getTemplateForType } from '../constants/diagramTemplates';
 
 export const useDiagramLogic = () => {
     const { user } = useAuth0();
@@ -29,6 +30,15 @@ export const useDiagramLogic = () => {
     const [historyIndex, setHistoryIndex] = useState(0);
     const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash-lite");
     const [selectedDiagramType, setSelectedDiagramType] = useState("flowchart");
+
+    // Load template when diagram type changes
+    const handleDiagramTypeChange = (newType) => {
+        setSelectedDiagramType(newType);
+        const template = getTemplateForType(newType);
+        setCode(template);
+        setHistory([template]);
+        setHistoryIndex(0);
+    };
 
     const isProcessingRef = useRef(false);
 
@@ -284,6 +294,6 @@ export const useDiagramLogic = () => {
         selectedModel,
         setSelectedModel,
         selectedDiagramType,
-        setSelectedDiagramType
+        setSelectedDiagramType: handleDiagramTypeChange
     };
 };
