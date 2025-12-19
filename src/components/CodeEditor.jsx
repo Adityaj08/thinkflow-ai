@@ -156,14 +156,25 @@ export const CodeEditor = ({
         showToast?.('Exported: diagram.mmd', 'success');
     };
 
-    const buttonClass = `p-2 rounded-lg transition-all duration-200 flex items-center gap-1.5 text-sm ${isDarkMode
-        ? 'bg-white/10 hover:bg-white/20 text-white'
-        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-        }`;
+    const circleButtonClass = `p-2 h-10 w-10 rounded-full transition-all duration-200 flex items-center justify-center
+        ${isDarkMode
+            ? 'bg-white/10 text-white border border-white/20 hover:bg-white/30'
+            : 'bg-black/10 text-black border border-black/20 hover:bg-black/30'
+        }
+        hover:scale-105`;
 
     return (
         <>
-            <div className={`mt-6 rounded-lg overflow-hidden border transition-all duration-200 ${isDarkMode
+            {/* Hidden file input for import */}
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept=".mmd,.txt"
+                onChange={handleImport}
+                className="hidden"
+            />
+
+            <div className={`relative mt-6 rounded-lg overflow-hidden border transition-all duration-200 ${isDarkMode
                 ? 'border-white/10'
                 : 'border-gray-200'
                 }`}>
@@ -189,80 +200,68 @@ export const CodeEditor = ({
                         highlightSelectionMatches: true,
                     }}
                 />
-            </div>
 
-            {/* Hidden file input for import */}
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept=".mmd,.txt"
-                onChange={handleImport}
-                className="hidden"
-            />
+                {/* Floating action buttons - bottom right */}
+                <div className="absolute bottom-3 right-3 z-10 flex gap-2">
+                    {/* Copy */}
+                    <button
+                        onClick={handleCopyCode}
+                        disabled={isCopying}
+                        className={`${circleButtonClass} ${isCopying && 'opacity-50 cursor-not-allowed'}`}
+                        title="Copy code"
+                    >
+                        {isCopying ? (
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        ) : (
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        )}
+                    </button>
 
-            <div className="flex gap-2 mt-2 flex-wrap">
-                {/* Copy */}
-                <button
-                    onClick={handleCopyCode}
-                    disabled={isCopying}
-                    className={`${buttonClass} ${isCopying && 'opacity-50 cursor-not-allowed'}`}
-                    title="Copy code to clipboard"
-                >
-                    {isCopying ? (
-                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    ) : (
+                    {/* Import */}
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className={circleButtonClass}
+                        title="Import .mmd file"
+                    >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
-                    )}
-                    Copy
-                </button>
+                    </button>
 
-                {/* Import */}
-                <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className={buttonClass}
-                    title="Import .mmd file"
-                >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                    Import
-                </button>
+                    {/* Export */}
+                    <button
+                        onClick={handleExport}
+                        className={circleButtonClass}
+                        title="Export .mmd file"
+                    >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
 
-                {/* Export */}
-                <button
-                    onClick={handleExport}
-                    className={buttonClass}
-                    title="Export as .mmd file"
-                >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Export
-                </button>
-
-                {/* Save */}
-                <button
-                    onClick={saveDiagram}
-                    className={buttonClass}
-                    title="Save diagram (S)"
-                >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg>
-                    Save
-                </button>
+                    {/* Save */}
+                    <button
+                        onClick={saveDiagram}
+                        className={circleButtonClass}
+                        title="Save diagram (S)"
+                    >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </>
     );
