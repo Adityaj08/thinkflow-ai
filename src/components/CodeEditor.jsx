@@ -105,6 +105,7 @@ export const CodeEditor = ({
     showToast
 }) => {
     const [isCopying, setIsCopying] = React.useState(false);
+    const fileInputRef = React.useRef(null);
 
     const onChange = useCallback((value) => {
         setCode(value);
@@ -121,6 +122,44 @@ export const CodeEditor = ({
             setIsCopying(false);
         }
     };
+
+    const handleImport = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target?.result;
+            if (typeof content === 'string') {
+                setCode(content);
+                showToast?.(`Imported: ${file.name}`, 'success');
+            }
+        };
+        reader.onerror = () => {
+            showToast?.('Failed to read file', 'error');
+        };
+        reader.readAsText(file);
+        // Reset input so same file can be imported again
+        event.target.value = '';
+    };
+
+    const handleExport = () => {
+        const blob = new Blob([code], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagram.mmd';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast?.('Exported: diagram.mmd', 'success');
+    };
+
+    const buttonClass = `p-2 rounded-lg transition-all duration-200 flex items-center gap-1.5 text-sm ${isDarkMode
+        ? 'bg-white/10 hover:bg-white/20 text-white'
+        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+        }`;
 
     return (
         <>
@@ -151,24 +190,22 @@ export const CodeEditor = ({
                     }}
                 />
             </div>
-            <div className="flex gap-2 mt-2">
-                <button
-                    onClick={saveDiagram}
-                    className={`px-4 sm:px-5 py-2 sm:py-3 rounded-lg transition-all duration-200 ${isDarkMode
-                        ? 'bg-white/10 hover:bg-white/20'
-                        : 'bg-gray-200 hover:bg-gray-300'
-                        }`}
-                    title="Save diagram (S)"
-                >
-                    Save
-                </button>
+
+            {/* Hidden file input for import */}
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept=".mmd,.txt"
+                onChange={handleImport}
+                className="hidden"
+            />
+
+            <div className="flex gap-2 mt-2 flex-wrap">
+                {/* Copy */}
                 <button
                     onClick={handleCopyCode}
                     disabled={isCopying}
-                    className={`px-4 sm:px-5 py-2 sm:py-3 rounded-lg transition-all duration-200 flex items-center gap-2 ${isDarkMode
-                        ? 'bg-white/10 hover:bg-white/20'
-                        : 'bg-gray-200 hover:bg-gray-300'
-                        } ${isCopying && 'opacity-50 cursor-not-allowed'}`}
+                    className={`${buttonClass} ${isCopying && 'opacity-50 cursor-not-allowed'}`}
                     title="Copy code to clipboard"
                 >
                     {isCopying ? (
@@ -182,7 +219,49 @@ export const CodeEditor = ({
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
                     )}
-                    Copy Code
+                    Copy
+                </button>
+
+                {/* Import */}
+                <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className={buttonClass}
+                    title="Import .mmd file"
+                >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Import
+                </button>
+
+                {/* Export */}
+                <button
+                    onClick={handleExport}
+                    className={buttonClass}
+                    title="Export as .mmd file"
+                >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export
+                </button>
+
+                {/* Save */}
+                <button
+                    onClick={saveDiagram}
+                    className={buttonClass}
+                    title="Save diagram (S)"
+                >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
                 </button>
             </div>
         </>
