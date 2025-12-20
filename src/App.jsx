@@ -63,6 +63,7 @@ export default function App() {
     toggleEditInput,
     undo,
     redo,
+    navigateHistory,
     historyIndex,
     history,
     clearStorage,
@@ -165,6 +166,9 @@ export default function App() {
           setSelectedModel={setSelectedModel}
           copyToClipboard={copyToClipboard}
           showToast={showToast}
+          history={history}
+          historyIndex={historyIndex}
+          navigateHistory={navigateHistory}
         />
 
         <ExplanationSection

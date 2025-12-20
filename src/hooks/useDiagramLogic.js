@@ -194,6 +194,15 @@ export const useDiagramLogic = () => {
         }
     };
 
+    const navigateHistory = async (index) => {
+        if (index >= 0 && index < history.length) {
+            setHistoryIndex(index);
+            const newCode = history[index];
+            setCode(newCode);
+            await resetView(newCode);
+        }
+    };
+
     const clearStorage = async () => {
         localStorage.removeItem("diagram");
         const defaultCode = `graph TD\nA[Start] --> B{Decision}`;
@@ -288,6 +297,7 @@ export const useDiagramLogic = () => {
         toggleEditInput,
         undo,
         redo,
+        navigateHistory,
         historyIndex,
         history,
         clearStorage,

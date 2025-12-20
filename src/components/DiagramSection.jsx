@@ -39,7 +39,10 @@ export const DiagramSection = ({
     selectedModel,
     setSelectedModel,
     copyToClipboard,
-    showToast
+    showToast,
+    history,
+    historyIndex,
+    navigateHistory
 }) => {
     const [isCopying, setIsCopying] = React.useState(false);
 
@@ -221,6 +224,39 @@ export const DiagramSection = ({
                     )}
                 </button>
             </div>
+
+            {/* History overlay - bottom left */}
+            {history && history.length > 1 && (
+                <div className="absolute bottom-3 left-3 z-10">
+                    <div className={`flex gap-1 p-1 rounded-lg backdrop-blur-md ${isDarkMode
+                            ? 'bg-black/50 border border-white/20'
+                            : 'bg-white/80 border border-gray-200'
+                        }`}>
+                        {history.slice(-3).map((code, idx) => {
+                            const actualIndex = history.length > 3 ? history.length - 3 + idx : idx;
+                            const isActive = actualIndex === historyIndex;
+                            return (
+                                <button
+                                    key={actualIndex}
+                                    onClick={() => navigateHistory(actualIndex)}
+                                    className={`w-10 h-10 rounded-lg overflow-hidden text-[5px] font-mono p-1 transition-all duration-200 ${isActive
+                                            ? 'ring-2 ring-blue-500 bg-blue-500/20'
+                                            : isDarkMode
+                                                ? 'bg-white/10 hover:bg-white/20'
+                                                : 'bg-gray-100 hover:bg-gray-200'
+                                        }`}
+                                    title={`Version ${actualIndex + 1}`}
+                                >
+                                    <div className={`text-[6px] leading-tight overflow-hidden h-full ${isDarkMode ? 'text-white/60' : 'text-gray-500'
+                                        }`}>
+                                        {code?.substring(0, 40)}...
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
 
             <EditInputBox
                 isOpen={isEditInputOpen}
