@@ -228,29 +228,28 @@ export const DiagramSection = ({
             {/* History overlay - bottom left */}
             {history && history.length > 1 && (
                 <div className="absolute bottom-3 left-3 z-10">
-                    <div className={`flex gap-1 p-1 rounded-lg backdrop-blur-md ${isDarkMode
-                            ? 'bg-black/50 border border-white/20'
-                            : 'bg-white/80 border border-gray-200'
-                        }`}>
-                        {history.slice(-3).map((code, idx) => {
-                            const actualIndex = history.length > 3 ? history.length - 3 + idx : idx;
-                            const isActive = actualIndex === historyIndex;
+                    <div
+                        className={`flex gap-1.5 p-1.5 rounded-full backdrop-blur-md overflow-x-auto scrollbar-hide ${isDarkMode
+                                ? 'bg-black/50 border border-white/20'
+                                : 'bg-white/80 border border-gray-200'
+                            }`}
+                        style={{ maxWidth: '220px' }}
+                    >
+                        {history.map((_, idx) => {
+                            const isActive = idx === historyIndex;
                             return (
                                 <button
-                                    key={actualIndex}
-                                    onClick={() => navigateHistory(actualIndex)}
-                                    className={`w-10 h-10 rounded-lg overflow-hidden text-[5px] font-mono p-1 transition-all duration-200 ${isActive
-                                            ? 'ring-2 ring-blue-500 bg-blue-500/20'
+                                    key={idx}
+                                    onClick={() => navigateHistory(idx)}
+                                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-medium transition-all duration-200 ${isActive
+                                            ? 'ring-2 ring-blue-500 bg-blue-500/30 text-blue-400'
                                             : isDarkMode
-                                                ? 'bg-white/10 hover:bg-white/20'
-                                                : 'bg-gray-100 hover:bg-gray-200'
-                                        }`}
-                                    title={`Version ${actualIndex + 1}`}
+                                                ? 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white'
+                                                : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700'
+                                        } hover:scale-105`}
+                                    title={`Version ${idx + 1}`}
                                 >
-                                    <div className={`text-[6px] leading-tight overflow-hidden h-full ${isDarkMode ? 'text-white/60' : 'text-gray-500'
-                                        }`}>
-                                        {code?.substring(0, 40)}...
-                                    </div>
+                                    v{idx + 1}
                                 </button>
                             );
                         })}
