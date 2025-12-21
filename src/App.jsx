@@ -6,6 +6,7 @@ import { DiagramSection } from "./components/DiagramSection";
 import { CodeEditor } from "./components/CodeEditor";
 import { ExplanationSection } from "./components/ExplanationSection";
 import { HelpMenu } from "./components/HelpMenu";
+import { RecoveryPrompt } from "./components/RecoveryPrompt";
 import ScrollToTop from "./components/ScrollToTop";
 
 import { themes } from "./constants/themes";
@@ -70,7 +71,11 @@ export default function App() {
     selectedModel,
     setSelectedModel,
     selectedDiagramType,
-    setSelectedDiagramType
+    setSelectedDiagramType,
+    showRecoveryPrompt,
+    recoverDiagram,
+    dismissRecovery,
+    recoveryData
   } = useDiagramLogic();
 
   return (
@@ -98,6 +103,16 @@ export default function App() {
         }}
       />
       <ScrollToTop />
+
+      {/* Recovery Prompt Modal */}
+      <RecoveryPrompt
+        isOpen={showRecoveryPrompt}
+        onRecover={recoverDiagram}
+        onDismiss={dismissRecovery}
+        recoveryData={recoveryData}
+        isDarkMode={isDarkMode}
+      />
+
       <div className="max-w-5xl mx-auto p-2 sm:p-4">
         <Header
           isDarkMode={isDarkMode}
