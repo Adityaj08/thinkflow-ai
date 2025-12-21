@@ -30,8 +30,6 @@ export const useDiagramLogic = () => {
     const [historyIndex, setHistoryIndex] = useState(0);
     const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash-lite");
     const [selectedDiagramType, setSelectedDiagramType] = useState("flowchart");
-    const [showRecoveryPrompt, setShowRecoveryPrompt] = useState(false);
-    const [recoveryData, setRecoveryData] = useState(null);
 
     // Load template when diagram type changes
     const handleDiagramTypeChange = (newType) => {
@@ -61,7 +59,10 @@ export const useDiagramLogic = () => {
     }, [code, history, historyIndex]);
 
     // Check for recovery on mount
+    const recoveryShownRef = useRef(false);
     useEffect(() => {
+        if (recoveryShownRef.current) return;
+
         const autoSaveStr = localStorage.getItem('diagram_autosave');
         const savedDiagram = localStorage.getItem('diagram');
 
@@ -70,31 +71,37 @@ export const useDiagramLogic = () => {
                 const autoSaveData = JSON.parse(autoSaveStr);
                 // Check if auto-saved code differs from current saved diagram
                 if (autoSaveData.code && autoSaveData.code !== savedDiagram) {
-                    setRecoveryData(autoSaveData);
-                    setShowRecoveryPrompt(true);
+                    recoveryShownRef.current = true;
+                    const timestamp = autoSaveData.timestamp
+                        ? new Date(autoSaveData.timestamp)
+                        : new Date();
+                    const dateStr = timestamp.toLocaleDateString();
+                    const timeStr = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    // Show toast with recover action
+                    toast(`Recover Unsaved Changes from ${dateStr} ${timeStr}`, {
+                        duration: 10000,
+                        action: {
+                            label: 'Recover',
+                            onClick: () => {
+                                setCode(autoSaveData.code);
+                                if (autoSaveData.history) setHistory(autoSaveData.history);
+                                if (typeof autoSaveData.historyIndex === 'number') setHistoryIndex(autoSaveData.historyIndex);
+                                localStorage.setItem('diagram', autoSaveData.code);
+                                localStorage.removeItem('diagram_autosave');
+                                toast.success('Diagram recovered!');
+                            }
+                        },
+                        onDismiss: () => {
+                            localStorage.removeItem('diagram_autosave');
+                        }
+                    });
                 }
             } catch (e) {
                 console.warn('Failed to parse autosave data:', e);
             }
         }
     }, []);
-
-    const recoverDiagram = () => {
-        if (recoveryData) {
-            setCode(recoveryData.code);
-            if (recoveryData.history) setHistory(recoveryData.history);
-            if (typeof recoveryData.historyIndex === 'number') setHistoryIndex(recoveryData.historyIndex);
-            localStorage.setItem('diagram', recoveryData.code);
-            showToast('Diagram recovered!', 'success');
-        }
-        setShowRecoveryPrompt(false);
-        localStorage.removeItem('diagram_autosave');
-    };
-
-    const dismissRecovery = () => {
-        setShowRecoveryPrompt(false);
-        localStorage.removeItem('diagram_autosave');
-    };
 
     const isProcessingRef = useRef(false);
 
@@ -360,10 +367,6 @@ export const useDiagramLogic = () => {
         selectedModel,
         setSelectedModel,
         selectedDiagramType,
-        setSelectedDiagramType: handleDiagramTypeChange,
-        showRecoveryPrompt,
-        recoverDiagram,
-        dismissRecovery,
-        recoveryData
+        setSelectedDiagramType: handleDiagramTypeChange
     };
 };
