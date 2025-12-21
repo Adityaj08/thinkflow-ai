@@ -30,6 +30,8 @@ export const useDiagramLogic = () => {
     const [historyIndex, setHistoryIndex] = useState(0);
     const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash-lite");
     const [selectedDiagramType, setSelectedDiagramType] = useState("flowchart");
+    const [showRecoveryPrompt, setShowRecoveryPrompt] = useState(false);
+    const [recoveryData, setRecoveryData] = useState(null);
 
     // Load template when diagram type changes
     const handleDiagramTypeChange = (newType) => {
@@ -38,6 +40,60 @@ export const useDiagramLogic = () => {
         setCode(template);
         setHistory([template]);
         setHistoryIndex(0);
+    };
+
+    // Auto-save interval (5 minutes)
+    useEffect(() => {
+        const AUTOSAVE_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+        const autoSave = () => {
+            const autoSaveData = {
+                code,
+                timestamp: Date.now(),
+                history,
+                historyIndex
+            };
+            localStorage.setItem('diagram_autosave', JSON.stringify(autoSaveData));
+        };
+
+        const intervalId = setInterval(autoSave, AUTOSAVE_INTERVAL);
+        return () => clearInterval(intervalId);
+    }, [code, history, historyIndex]);
+
+    // Check for recovery on mount
+    useEffect(() => {
+        const autoSaveStr = localStorage.getItem('diagram_autosave');
+        const savedDiagram = localStorage.getItem('diagram');
+
+        if (autoSaveStr) {
+            try {
+                const autoSaveData = JSON.parse(autoSaveStr);
+                // Check if auto-saved code differs from current saved diagram
+                if (autoSaveData.code && autoSaveData.code !== savedDiagram) {
+                    setRecoveryData(autoSaveData);
+                    setShowRecoveryPrompt(true);
+                }
+            } catch (e) {
+                console.warn('Failed to parse autosave data:', e);
+            }
+        }
+    }, []);
+
+    const recoverDiagram = () => {
+        if (recoveryData) {
+            setCode(recoveryData.code);
+            if (recoveryData.history) setHistory(recoveryData.history);
+            if (typeof recoveryData.historyIndex === 'number') setHistoryIndex(recoveryData.historyIndex);
+            localStorage.setItem('diagram', recoveryData.code);
+            showToast('Diagram recovered!', 'success');
+        }
+        setShowRecoveryPrompt(false);
+        localStorage.removeItem('diagram_autosave');
+    };
+
+    const dismissRecovery = () => {
+        setShowRecoveryPrompt(false);
+        localStorage.removeItem('diagram_autosave');
     };
 
     const isProcessingRef = useRef(false);
@@ -304,6 +360,10 @@ export const useDiagramLogic = () => {
         selectedModel,
         setSelectedModel,
         selectedDiagramType,
-        setSelectedDiagramType: handleDiagramTypeChange
+        setSelectedDiagramType: handleDiagramTypeChange,
+        showRecoveryPrompt,
+        recoverDiagram,
+        dismissRecovery,
+        recoveryData
     };
 };
