@@ -127,6 +127,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Recent Changes
 
+### Auto-save with Recovery (Dec 2024)
+- Automatic save every 5 minutes to localStorage
+- Recovery toast prompt on load showing date/time of last auto-save
+- One-click "Recover" button to restore unsaved changes
+
+### Import/Export .mmd Files (Dec 2024)
+- Export diagrams as native `.mmd` (Mermaid) files
+- Import `.mmd` or `.txt` files via file picker
+- Circular action buttons in code editor (Copy, Import, Export, Save)
+
+### Diagram History Panel (Dec 2024)
+- Version history overlay in bottom-left of diagram
+- Circular buttons showing v1, v2, v3, etc.
+- Click to navigate between diagram versions
+- Blue ring highlights current version
+
 ### AI Expand Diagram (Dec 2024)
 - Added AI-powered expand button with sparkle icon (✨)
 - Expands diagrams with more nodes, connections, and context
