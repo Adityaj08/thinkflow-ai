@@ -1,6 +1,7 @@
 import React from 'react';
 import { DiagramControls } from "./DiagramControls";
 import { EditInputBox } from "./EditInputBox";
+import { parseDiagramStats } from "../utils/diagramStats";
 
 export const DiagramSection = ({
     fullscreenRef,
@@ -45,6 +46,9 @@ export const DiagramSection = ({
     navigateHistory
 }) => {
     const [isCopying, setIsCopying] = React.useState(false);
+
+    // Compute diagram stats
+    const stats = React.useMemo(() => parseDiagramStats(code), [code]);
 
     const handleCopyToClipboard = async () => {
         setIsCopying(true);
@@ -132,6 +136,41 @@ export const DiagramSection = ({
                             {isSlideshowMode && diagramParts.length > 0 ? diagramParts[currentSlide] : code}
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Stats overlay - bottom right, above action buttons, hidden on mobile */}
+            <div className="absolute bottom-16 right-4 z-10 hidden sm:block">
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs backdrop-blur-md ${isDarkMode
+                        ? 'bg-black/50 border border-white/20 text-white/80'
+                        : 'bg-white/80 border border-gray-200 text-gray-600'
+                    }`}>
+                    {/* Diagram type badge */}
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${isDarkMode
+                            ? 'bg-blue-500/30 text-blue-300'
+                            : 'bg-blue-100 text-blue-600'
+                        }`}>
+                        {stats.diagramType}
+                    </span>
+
+                    {/* Node count */}
+                    <span className="flex items-center gap-1" title="Nodes">
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="3" y="3" width="7" height="7" rx="1" />
+                            <rect x="14" y="3" width="7" height="7" rx="1" />
+                            <rect x="3" y="14" width="7" height="7" rx="1" />
+                            <rect x="14" y="14" width="7" height="7" rx="1" />
+                        </svg>
+                        {stats.nodeCount}
+                    </span>
+
+                    {/* Edge count */}
+                    <span className="flex items-center gap-1" title="Edges">
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                        {stats.edgeCount}
+                    </span>
                 </div>
             </div>
 
@@ -230,8 +269,8 @@ export const DiagramSection = ({
                 <div className="absolute bottom-3 left-3 z-10">
                     <div
                         className={`flex gap-1.5 p-1.5 rounded-full backdrop-blur-md overflow-x-auto scrollbar-hide ${isDarkMode
-                                ? 'bg-black/50 border border-white/20'
-                                : 'bg-white/80 border border-gray-200'
+                            ? 'bg-black/50 border border-white/20'
+                            : 'bg-white/80 border border-gray-200'
                             }`}
                         style={{ maxWidth: '220px' }}
                     >
@@ -242,10 +281,10 @@ export const DiagramSection = ({
                                     key={idx}
                                     onClick={() => navigateHistory(idx)}
                                     className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-medium transition-all duration-200 ${isActive
-                                            ? 'ring-2 ring-blue-500 bg-blue-500/30 text-blue-400'
-                                            : isDarkMode
-                                                ? 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white'
-                                                : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700'
+                                        ? 'ring-2 ring-blue-500 bg-blue-500/30 text-blue-400'
+                                        : isDarkMode
+                                            ? 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white'
+                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700'
                                         } hover:scale-105`}
                                     title={`Version ${idx + 1}`}
                                 >
