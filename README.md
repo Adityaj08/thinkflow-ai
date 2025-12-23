@@ -127,6 +127,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Recent Changes
 
+### Auto-save with Recovery (Dec 2024)
+- Automatic save every 5 minutes to localStorage
+- Recovery toast prompt on load showing date/time of last auto-save
+- One-click "Recover" button to restore unsaved changes
+
+### Import/Export .mmd Files (Dec 2024)
+- Export diagrams as native `.mmd` (Mermaid) files
+- Import `.mmd` or `.txt` files via file picker
+- Circular action buttons in code editor (Copy, Import, Export, Save)
+
+### Diagram History Panel (Dec 2024)
+- Version history overlay in bottom-left of diagram
+- Circular buttons showing v1, v2, v3, etc.
+- Click to navigate between diagram versions
+- Blue ring highlights current version
+
+### AI Expand Diagram (Dec 2024)
+- Added AI-powered expand button with sparkle icon (✨)
+- Expands diagrams with more nodes, connections, and context
+- Adds subgraphs, decision branches, and error handling
+- Works with both Gemini and OpenRouter models
+
+### Syntax Highlighting (Dec 2024)
+- Added CodeMirror-based code editor with custom Mermaid syntax highlighting
+- Color-coded keywords, arrows, strings, comments, and node IDs
+- Line numbers and active line highlighting
+- Dark/light theme support matching app theme
+
 ### Diagram Type Selector & Enhanced AI (Dec 2024)
 - Added diagram type selector dropdown with all 23 diagram types
 - Integrated syntax reference for improved AI diagram generation
@@ -156,6 +184,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Restored undo/redo functionality and fixed redundant rendering
 - Refactored diagram logic into separate hooks for better maintainability
 - Added keyboard shortcuts hook for improved navigation
+- Unified AI calls with `callAI` helper function for cleaner code
 
 ## Acknowledgments
 

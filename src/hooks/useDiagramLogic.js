@@ -5,6 +5,7 @@ import { useDiagramGen } from './useDiagramGen';
 import { useDiagramInteraction } from './useDiagramInteraction';
 import { useDiagramExport } from './useDiagramExport';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts';
+import { getTemplateForType } from '../constants/diagramTemplates';
 
 export const useDiagramLogic = () => {
     const { user } = useAuth0();
@@ -29,6 +30,78 @@ export const useDiagramLogic = () => {
     const [historyIndex, setHistoryIndex] = useState(0);
     const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash-lite");
     const [selectedDiagramType, setSelectedDiagramType] = useState("flowchart");
+
+    // Load template when diagram type changes
+    const handleDiagramTypeChange = (newType) => {
+        setSelectedDiagramType(newType);
+        const template = getTemplateForType(newType);
+        setCode(template);
+        setHistory([template]);
+        setHistoryIndex(0);
+    };
+
+    // Auto-save interval (5 minutes)
+    useEffect(() => {
+        const AUTOSAVE_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+        const autoSave = () => {
+            const autoSaveData = {
+                code,
+                timestamp: Date.now(),
+                history,
+                historyIndex
+            };
+            localStorage.setItem('diagram_autosave', JSON.stringify(autoSaveData));
+        };
+
+        const intervalId = setInterval(autoSave, AUTOSAVE_INTERVAL);
+        return () => clearInterval(intervalId);
+    }, [code, history, historyIndex]);
+
+    // Check for recovery on mount
+    const recoveryShownRef = useRef(false);
+    useEffect(() => {
+        if (recoveryShownRef.current) return;
+
+        const autoSaveStr = localStorage.getItem('diagram_autosave');
+        const savedDiagram = localStorage.getItem('diagram');
+
+        if (autoSaveStr) {
+            try {
+                const autoSaveData = JSON.parse(autoSaveStr);
+                // Check if auto-saved code differs from current saved diagram
+                if (autoSaveData.code && autoSaveData.code !== savedDiagram) {
+                    recoveryShownRef.current = true;
+                    const timestamp = autoSaveData.timestamp
+                        ? new Date(autoSaveData.timestamp)
+                        : new Date();
+                    const dateStr = timestamp.toLocaleDateString();
+                    const timeStr = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    // Show toast with recover action
+                    toast(`Recover Unsaved Changes from ${dateStr} ${timeStr}`, {
+                        duration: 10000,
+                        action: {
+                            label: 'Recover',
+                            onClick: () => {
+                                setCode(autoSaveData.code);
+                                if (autoSaveData.history) setHistory(autoSaveData.history);
+                                if (typeof autoSaveData.historyIndex === 'number') setHistoryIndex(autoSaveData.historyIndex);
+                                localStorage.setItem('diagram', autoSaveData.code);
+                                localStorage.removeItem('diagram_autosave');
+                                toast.success('Diagram recovered!');
+                            }
+                        },
+                        onDismiss: () => {
+                            localStorage.removeItem('diagram_autosave');
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn('Failed to parse autosave data:', e);
+            }
+        }
+    }, []);
 
     const isProcessingRef = useRef(false);
 
@@ -94,7 +167,8 @@ export const useDiagramLogic = () => {
         setExplanation,
         generateDiagram: generateDiagramGen,
         updateDiagram: updateDiagramGen,
-        analyzeDiagram: analyzeDiagramGen
+        analyzeDiagram: analyzeDiagramGen,
+        expandDiagram: expandDiagramGen
     } = useDiagramGen({
         code,
         setCode,
@@ -123,6 +197,7 @@ export const useDiagramLogic = () => {
     const generateDiagram = () => generateDiagramGen(prompt, isProcessingRef);
     const updateDiagram = (updatePrompt) => updateDiagramGen(updatePrompt, isProcessingRef);
     const analyzeDiagram = () => analyzeDiagramGen(isProcessingRef);
+    const expandDiagram = () => expandDiagramGen(isProcessingRef);
 
     const toggleSlideshowMode = () => {
         const newMode = !isSlideshowMode;
@@ -177,6 +252,15 @@ export const useDiagramLogic = () => {
             const newIndex = historyIndex + 1;
             setHistoryIndex(newIndex);
             const newCode = history[newIndex];
+            setCode(newCode);
+            await resetView(newCode);
+        }
+    };
+
+    const navigateHistory = async (index) => {
+        if (index >= 0 && index < history.length) {
+            setHistoryIndex(index);
+            const newCode = history[index];
             setCode(newCode);
             await resetView(newCode);
         }
@@ -258,6 +342,7 @@ export const useDiagramLogic = () => {
         saveDiagram,
         generateDiagram,
         analyzeDiagram,
+        expandDiagram,
         downloadDiagram,
         copyToClipboard,
         toggleFullscreen,
@@ -275,12 +360,13 @@ export const useDiagramLogic = () => {
         toggleEditInput,
         undo,
         redo,
+        navigateHistory,
         historyIndex,
         history,
         clearStorage,
         selectedModel,
         setSelectedModel,
         selectedDiagramType,
-        setSelectedDiagramType
+        setSelectedDiagramType: handleDiagramTypeChange
     };
 };

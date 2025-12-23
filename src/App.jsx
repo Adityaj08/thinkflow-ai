@@ -45,6 +45,7 @@ export default function App() {
     saveDiagram,
     generateDiagram,
     analyzeDiagram,
+    expandDiagram,
     downloadDiagram,
     copyToClipboard,
     toggleFullscreen,
@@ -62,6 +63,7 @@ export default function App() {
     toggleEditInput,
     undo,
     redo,
+    navigateHistory,
     historyIndex,
     history,
     clearStorage,
@@ -96,6 +98,7 @@ export default function App() {
         }}
       />
       <ScrollToTop />
+
       <div className="max-w-5xl mx-auto p-2 sm:p-4">
         <Header
           isDarkMode={isDarkMode}
@@ -138,6 +141,7 @@ export default function App() {
           currentSlide={currentSlide}
           code={code}
           analyzeDiagram={analyzeDiagram}
+          expandDiagram={expandDiagram}
           isAnalyzing={isAnalyzing}
           orientation={orientation}
           handleOrientationChange={handleOrientationChange}
@@ -163,6 +167,9 @@ export default function App() {
           setSelectedModel={setSelectedModel}
           copyToClipboard={copyToClipboard}
           showToast={showToast}
+          history={history}
+          historyIndex={historyIndex}
+          navigateHistory={navigateHistory}
         />
 
         <ExplanationSection
@@ -176,6 +183,7 @@ export default function App() {
           setCode={setCode}
           isDarkMode={isDarkMode}
           saveDiagram={saveDiagram}
+          showToast={showToast}
         />
       </div>
 
