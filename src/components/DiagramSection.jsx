@@ -47,8 +47,52 @@ export const DiagramSection = ({
 }) => {
     const [isCopying, setIsCopying] = React.useState(false);
 
+    // Pan/drag state
+    const [isPanning, setIsPanning] = React.useState(false);
+    const [panPosition, setPanPosition] = React.useState({ x: 0, y: 0 });
+    const [startPan, setStartPan] = React.useState({ x: 0, y: 0 });
+    const panContainerRef = React.useRef(null);
+
     // Compute diagram stats
     const stats = React.useMemo(() => parseDiagramStats(code), [code]);
+
+    // Reset pan when code changes
+    React.useEffect(() => {
+        setPanPosition({ x: 0, y: 0 });
+    }, [code]);
+
+    const handleMouseDown = (e) => {
+        // Only pan on left click and when not clicking on interactive elements
+        if (e.button !== 0) return;
+        if (e.target.closest('button, input, .node')) return;
+
+        setIsPanning(true);
+        setStartPan({
+            x: e.clientX - panPosition.x,
+            y: e.clientY - panPosition.y
+        });
+        e.currentTarget.style.cursor = 'grabbing';
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isPanning) return;
+
+        setPanPosition({
+            x: e.clientX - startPan.x,
+            y: e.clientY - startPan.y
+        });
+    };
+
+    const handleMouseUp = (e) => {
+        setIsPanning(false);
+        if (panContainerRef.current) {
+            panContainerRef.current.style.cursor = 'grab';
+        }
+    };
+
+    const handleMouseLeave = () => {
+        setIsPanning(false);
+    };
 
     const handleCopyToClipboard = async () => {
         setIsCopying(true);
@@ -115,21 +159,27 @@ export const DiagramSection = ({
                 }}
             >
                 <div
+                    ref={panContainerRef}
                     className="bg-white rounded-lg w-full h-full flex items-center justify-center p-8"
                     style={{
                         width: '100%',
                         height: '100%',
                         minHeight: '500px',
                         position: isFullscreen ? 'relative' : 'static',
-                        overflow: isFullscreen ? 'auto' : 'hidden'
+                        overflow: 'hidden',
+                        cursor: isPanning ? 'grabbing' : 'grab'
                     }}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseLeave}
                 >
                     <div
                         className="w-full h-full flex items-center justify-center"
                         style={{
                             minHeight: '500px',
-                            transition: 'all 0.2s ease-in-out',
-                            overflow: 'hidden'
+                            transition: isPanning ? 'none' : 'transform 0.1s ease-out',
+                            transform: `translate(${panPosition.x}px, ${panPosition.y}px)`
                         }}
                     >
                         <div className="mermaid w-full h-full">
@@ -142,13 +192,13 @@ export const DiagramSection = ({
             {/* Stats overlay - bottom right, above action buttons, hidden on mobile */}
             <div className="absolute bottom-16 right-4 z-10 hidden sm:block">
                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs backdrop-blur-md ${isDarkMode
-                        ? 'bg-black/50 border border-white/20 text-white/80'
-                        : 'bg-white/80 border border-gray-200 text-gray-600'
+                    ? 'bg-black/50 border border-white/20 text-white/80'
+                    : 'bg-white/80 border border-gray-200 text-gray-600'
                     }`}>
                     {/* Diagram type badge */}
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${isDarkMode
-                            ? 'bg-blue-500/30 text-blue-300'
-                            : 'bg-blue-100 text-blue-600'
+                        ? 'bg-blue-500/30 text-blue-300'
+                        : 'bg-blue-100 text-blue-600'
                         }`}>
                         {stats.diagramType}
                     </span>
