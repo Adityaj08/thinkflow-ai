@@ -111,6 +111,14 @@ export const CodeEditor = ({
         setCode(value);
     }, [setCode]);
 
+    // Code stats
+    const codeStats = React.useMemo(() => {
+        const chars = code.length;
+        const words = code.trim() ? code.trim().split(/\s+/).length : 0;
+        const lines = code.split('\n').length;
+        return { chars, words, lines };
+    }, [code]);
+
     const handleCopyCode = async () => {
         setIsCopying(true);
         try {
@@ -262,6 +270,16 @@ export const CodeEditor = ({
                         </svg>
                     </button>
                 </div>
+            </div>
+
+            {/* Stats bar - below editor, right aligned */}
+            <div className={`flex justify-end mt-2 text-xs ${isDarkMode ? 'text-white/50' : 'text-gray-400'
+                }`}>
+                <span>{codeStats.lines} lines</span>
+                <span className="mx-2">•</span>
+                <span>{codeStats.words} words</span>
+                <span className="mx-2">•</span>
+                <span>{codeStats.chars} chars</span>
             </div>
         </>
     );
