@@ -50,6 +50,21 @@ export const DiagramSection = ({
     // Compute diagram stats
     const stats = React.useMemo(() => parseDiagramStats(code), [code]);
 
+    // Fun loading messages
+    const loadingMessages = [
+        "Generating diagram...",
+        "Thinking...",
+        "Drawing nodes...",
+        "Connecting the dots...",
+        "Almost there...",
+        "Brewing magic...",
+        "Crafting your diagram...",
+        "Making it pretty..."
+    ];
+    const [loadingMessage] = React.useState(
+        () => loadingMessages[Math.floor(Math.random() * loadingMessages.length)]
+    );
+
     const handleCopyToClipboard = async () => {
         setIsCopying(true);
         try {
@@ -70,7 +85,7 @@ export const DiagramSection = ({
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span className="text-sm">Generating diagram...</span>
+                        <span className="text-sm">{loadingMessage}</span>
                     </div>
                 </div>
             )}
@@ -142,13 +157,13 @@ export const DiagramSection = ({
             {/* Stats overlay - bottom right, above action buttons, hidden on mobile */}
             <div className="absolute bottom-16 right-4 z-10 hidden sm:block">
                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs backdrop-blur-md ${isDarkMode
-                        ? 'bg-black/50 border border-white/20 text-white/80'
-                        : 'bg-white/80 border border-gray-200 text-gray-600'
+                    ? 'bg-black/50 border border-white/20 text-white/80'
+                    : 'bg-white/80 border border-gray-200 text-gray-600'
                     }`}>
                     {/* Diagram type badge */}
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${isDarkMode
-                            ? 'bg-blue-500/30 text-blue-300'
-                            : 'bg-blue-100 text-blue-600'
+                        ? 'bg-blue-500/30 text-blue-300'
+                        : 'bg-blue-100 text-blue-600'
                         }`}>
                         {stats.diagramType}
                     </span>
