@@ -43,7 +43,9 @@ export const DiagramSection = ({
     showToast,
     history,
     historyIndex,
-    navigateHistory
+    navigateHistory,
+    isLocked,
+    toggleLock
 }) => {
     const [isCopying, setIsCopying] = React.useState(false);
 
@@ -113,6 +115,8 @@ export const DiagramSection = ({
                 redo={redo}
                 canUndo={canUndo}
                 canRedo={canRedo}
+                isLocked={isLocked}
+                toggleLock={toggleLock}
             />
 
             <div
@@ -224,16 +228,16 @@ export const DiagramSection = ({
                 {/* Analyze Diagram Button */}
                 <button
                     onClick={analyzeDiagram}
-                    disabled={isAnalyzing || isLoading}
+                    disabled={isAnalyzing || isLoading || isLocked}
                     className={`p-2 h-10 w-10 rounded-full transition-all duration-200 flex items-center justify-center
                         ${isDarkMode
                             ? 'bg-blue-500/10 text-white border border-white/20 hover:bg-blue/20'
                             : 'bg-blue-500/10 text-black border border-black/20 hover:bg-blue/20'
                         }
-                        ${(isAnalyzing || isLoading) && 'opacity-50 cursor-not-allowed'}
-                        ${!isAnalyzing && !isLoading && 'hover:scale-105'}
+                        ${(isAnalyzing || isLoading || isLocked) && 'opacity-50 cursor-not-allowed'}
+                        ${!isAnalyzing && !isLoading && !isLocked && 'hover:scale-105'}
                     `}
-                    title="Analyze diagram"
+                    title={isLocked ? "Unlock diagram to analyze" : "Analyze diagram"}
                 >
                     {isAnalyzing ? (
                         <>
@@ -254,16 +258,16 @@ export const DiagramSection = ({
                 {/* Expand Diagram Button */}
                 <button
                     onClick={expandDiagram}
-                    disabled={isLoading}
+                    disabled={isLoading || isLocked}
                     className={`p-2 h-10 w-10 rounded-full transition-all duration-200 flex items-center justify-center
                         ${isDarkMode
                             ? 'bg-purple-500/10 text-white border border-white/20 hover:bg-purple-500/20'
                             : 'bg-purple-500/10 text-black border border-black/20 hover:bg-purple-500/20'
                         }
-                        ${isLoading && 'opacity-50 cursor-not-allowed'}
-                        ${!isLoading && 'hover:scale-105'}
+                        ${(isLoading || isLocked) && 'opacity-50 cursor-not-allowed'}
+                        ${!isLoading && !isLocked && 'hover:scale-105'}
                     `}
-                    title="Expand diagram with more context"
+                    title={isLocked ? "Unlock diagram to expand" : "Expand diagram with more context"}
                 >
                     {isLoading ? (
                         <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
