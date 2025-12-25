@@ -30,6 +30,7 @@ export const useDiagramLogic = () => {
     const [historyIndex, setHistoryIndex] = useState(0);
     const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash-lite");
     const [selectedDiagramType, setSelectedDiagramType] = useState("flowchart");
+    const [isLocked, setIsLocked] = useState(false);
 
     // Load template when diagram type changes
     const handleDiagramTypeChange = (newType) => {
@@ -234,6 +235,7 @@ export const useDiagramLogic = () => {
 
     // Other handlers
     const toggleDarkMode = () => setIsDarkMode(prev => !prev);
+    const toggleLock = () => setIsLocked(prev => !prev);
     const canIncreaseScale = () => scale < 5;
     const canDecreaseScale = () => scale > 0.5;
 
@@ -367,6 +369,8 @@ export const useDiagramLogic = () => {
         selectedModel,
         setSelectedModel,
         selectedDiagramType,
-        setSelectedDiagramType: handleDiagramTypeChange
+        setSelectedDiagramType: handleDiagramTypeChange,
+        isLocked,
+        toggleLock
     };
 };
