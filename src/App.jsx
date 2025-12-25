@@ -70,7 +70,9 @@ export default function App() {
     selectedModel,
     setSelectedModel,
     selectedDiagramType,
-    setSelectedDiagramType
+    setSelectedDiagramType,
+    isLocked,
+    toggleLock
   } = useDiagramLogic();
 
   return (
@@ -170,6 +172,8 @@ export default function App() {
           history={history}
           historyIndex={historyIndex}
           navigateHistory={navigateHistory}
+          isLocked={isLocked}
+          toggleLock={toggleLock}
         />
 
         <ExplanationSection
