@@ -22,26 +22,51 @@ export const DiagramControls = ({
   undo,
   redo,
   canUndo,
-  canRedo
+  canRedo,
+  isLocked,
+  toggleLock
 }) => (
   <div className={`absolute top-2 right-0 sm:right-2 flex flex-wrap items-center gap-2 z-10 p-2 mx-1 sm:mx-0 rounded-lg 
     ${isDarkMode ? 'bg-white/10 backdrop-blur-md' : 'bg-black/10 backdrop-blur-md'}`}
   >
     {/* Fullscreen and Orientation Controls */}
     <div className="flex gap-1">
+      {/* Lock/Unlock Button */}
+      <button
+        onClick={toggleLock}
+        className={`p-1 rounded transition-all duration-200 ${isLocked
+            ? 'bg-amber-500/30 text-amber-400'
+            : 'hover:bg-white/10'
+          }`}
+        title={isLocked ? "Unlock diagram (enable editing)" : "Lock diagram (prevent accidental edits)"}
+      >
+        {isLocked ? (
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        ) : (
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+          </svg>
+        )}
+      </button>
+
       <button
         onClick={toggleEditInput}
-        className="p-1 rounded hover:bg-white/10 transition-all duration-200"
-        title="Edit Diagram"
+        disabled={isLocked}
+        className={`p-1 rounded transition-all duration-200 ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
+        title={isLocked ? "Unlock diagram to edit" : "Edit Diagram"}
       >
         <EditIcon />
       </button>
 
       <button
         onClick={undo}
-        disabled={!canUndo}
-        className={`p-1 rounded transition-all duration-200 ${!canUndo ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
-        title="Undo"
+        disabled={!canUndo || isLocked}
+        className={`p-1 rounded transition-all duration-200 ${(!canUndo || isLocked) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
+        title={isLocked ? "Unlock diagram to undo" : "Undo"}
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 14L4 9l5-5" />
@@ -51,9 +76,9 @@ export const DiagramControls = ({
 
       <button
         onClick={redo}
-        disabled={!canRedo}
-        className={`p-1 rounded transition-all duration-200 ${!canRedo ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
-        title="Redo"
+        disabled={!canRedo || isLocked}
+        className={`p-1 rounded transition-all duration-200 ${(!canRedo || isLocked) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
+        title={isLocked ? "Unlock diagram to redo" : "Redo"}
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 14l5-5-5-5" />
